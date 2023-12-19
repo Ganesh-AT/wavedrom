@@ -13,10 +13,10 @@ By virtue of being written in JavaScript, the software is inherently cross-platf
 The clean and consistent look of the WaveDrom output makes it a candidate for generating professional electrical diagrams.
 These are meant for inclusion in customer-facing documents such as datasheets and programming reference manuals.
 Back in 2019, the folks at Ambarella attempted to use WaveDrom for this purpose.
-However, some shortcomings of the software complicated the creation of some of the complex waveforms.
+However, some shortcomings of the software complicated the creation of some complex waveforms.
 These included the [ability to combine two different waveforms in the same signal lane](https://github.com/wavedrom/wavedrom/issues/121) (to create, for example, a DDR clock waveform), [over-estimation of label widths](https://github.com/wavedrom/wavedrom/issues/265) leading to disfigured waveforms, and [inability to composite two different SVGs](https://github.com/wavedrom/wavedrom/issues/263) for post-processing, among others.
 As a result, the output SVG had to be manually edited to deliver a production-worthy waveform.
-This was not turning out to be a scalable solution with the growth in the number of SVGs fine-tuning of previously-finalized ones based on feedback.
+This was not turning out to be a scalable solution with the growth in the number of SVGs and fine-tuning of previously-finalized ones based on feedback.
 
 Thanks to the open-source nature of the software, a custom fork was made possible.
 Features were slowly added and refined based on user requirements over the last four years.
