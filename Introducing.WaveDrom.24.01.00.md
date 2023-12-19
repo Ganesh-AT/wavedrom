@@ -59,3 +59,81 @@ The representation of the transition to high-impedance states in the _default_ s
 [Using the Professional Skins - WaveJSON](demo/professional-skins.json)
 
 [ObservableHQ Playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-professional-skins-fit2pane)
+
+![](demo/professional-skins.svg)
+
+### Fractional _hscale_ Support
+
+WaveDrom 3.3.0 supports only positive integer values for the _hscale_ attribute in the _config_ object.
+The [updated grammar](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R48) for WaveDrom 24.01.0 adds support for fractional values less than 1.
+
+This feature is meant to horizontally compress timing diagrams rendering a large number of cycles.
+One of the oft-suggested remedies for such diagrams is the use of the _narrow_ skin. 
+_narrower_ and _narrowerer_ skins have also been created for diagrams involving 100+ cycles. 
+While the _narrow_ skin is a true skin with different transition slopes compared to the _default_ one, the others are simply scaled versions of the _narrow_ skin with scaling values set to 0.5 and 0.25.
+The incorporation of support for fractional _hscale_ less than 1 avoids the need for skins that are simply scaled versions of existing ones.
+It also provides users with flexibility to adjust the horizontal width - an aspect that is not possible with pre-generated skins.
+
+It must be noted that the fractional _hscale_ is not a straightforward scaling operation on the whole diagram.
+Only the rendered bricks and edge / node coordinates are scaled. 
+Squished labels and arrows are avoided by retaining the text and marker sizes based on the diagram's skin and other configuration parameters.
+
+[Exploring Fractional _hscale_ - WaveJSON](demo/fractional-hscale.json)
+
+[ObservableHQ Playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-0-fractional-hscale)
+
+![](demo/fractional-hscale.svg)
+
+It is possible to apply this feature to any diagram - even ones with just a couple of cycles.
+This can create funny-looking waveforms with cut-off header text and the like.
+However, that is not the intended use-case for this feature. Rather, real-world timing diagrams like the one above are the intended target.
+
+### Auto-Scaled Waveforms with _fit2pane_
+
+The 20x20 bricks used by WaveDrom are too small when viewed at their native resolution in large-sized monitors with high-resolution displays.
+In such setups, waveforms dealing with a small number of cycles are often too tiny to make out the real-time feedback in the web-based editor.
+On the other hand, large waveforms in small-sized browser windows may result in the user having to resort to horizontal scrolling to view the effects of their edits.
+In such cases, users often lose sight of the signal names on the left in the process of checking updates at the right edge.
+
+Fortunately, the use of vector graphics allows the resultant diagram to be fittend inside the available viewport without loss of detail.
+A [new configuration bit (_fit2pane_)](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R52) can be used to enable this feature.
+It is disabled by default to retain backwards compatibility.
+
+[Enabling the _fit2pane_ Feature - WaveJSON](demo/fit2pane-true.json)
+
+[Disabling the _fit2pane_ Feature - WaveJSON](demo/fit2pane-false.json)
+
+[ObservableHQ Playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-0-fit2pane-true-v-false)
+
+![](demo/fit2pane.png)
+
+Enabling this feature doesn't alter the core contents of the rendered SVG.
+By default, the width and height of the picture are set to the rendered image's absolute width and height.
+If _fit2pane_ is set, the width and height to 100% of the picture's container element.
+
+
+
+## Bug Fixes and Issue Resolutions
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
