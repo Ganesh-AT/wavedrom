@@ -12,6 +12,7 @@
 {Unescaped} = {All Valid} - {&1 .. &19} - ["\]
 {Hex} = {Digit} + [ABCDEFabcdef]
 {Digit9} = {Digit} - [0]
+{Digit8} = {Digit} - [9]
 {PosInt} = {Digit9}{Digit}*
 {Integer} = '-'?('0'|{PosInt})
 {StringWithSpacedChars} = '"' (String ' ')+ '"'
@@ -44,10 +45,17 @@ PlusSign = +
 <ConfigPair> ::= 'config: {' <ConfigProperties>+ '}' ','?
 				
 <ConfigProperties> ::= 'skin: ' String ','?
-					| 'hscale: ' {PosInt} ','?
+					| 'hscale: ' ({PosInt} | '0.'{Digit}*{Digit9}) ','?
 					| 'hbounds: [' '0'|{PosInt} ',' {PosInt} ']' ','?
 					| 'marks: ' Bool ','?
 					| 'arcFontSize: ' {PosInt} ','?
+					| 'fit2pane: ' (bool | Number) ','?
+					| 'wrapSvgInImg: ' (bool | Number) ','?
+					| 'txtBaseline: ' String ','?
+					| 'customStyle: ' String ','?
+					| 'colorMode: ' <ColorModeString> ','?
+
+<ColorModeString> ::= 'normal' | 'purebw' | 'grayscale' | 'posterize'
 					
 <HeadPair> ::= 'head: {' <HeadFootProperties>+ '}' ','?
 <FootPair> ::= 'foot: {' <HeadFootProperties>+ '}' ','?
@@ -81,18 +89,30 @@ PlusSign = +
 					| 'period: ' Number ','?
 					| 'phase: ' Number ','?
 					| 'over: ' <OverUnderString> ','?
-					| 'under:' <OverUnderString> ','?
+					| 'under: ' <OverUnderString> ','?
 					| 'data: ' Array ','?
-					| 'node': String ','?
+					| 'node: ' String ','?
+					| 'node_tlevel:' String ','?
+					| 'node_tpos:' String ','?
+					| 'dlStyle:' String ','?
+					| 'dlClass:' String ','?
+					| 'overlayOnLane:' ('0'|{PosInt}) ','?
+					| 'addGapsPhase:' Number ','?
+					| 'overrideSkin:' String ','?
+					| 'skinStyle:' String ','?
+					| 'skinClass:' String ','?
 
 <WaveString> ::= '"' <WaveChars>* '"'
 <WaveChars> ::= p | n | P | N | h | l | H | L | 0 | x | d | u | z | = | 0 | {PosInt} | PipeChar | . | < | >
 
-<WaveObject> ::= '[' <WaveObjectMemberPair> ']'
+<WaveObject> ::= '[' (<WaveObjectMemberPair> ','?)+  ']'
 <WaveObjectMemberPair> ::= <PieceWisePair>
+						| <TextLabelPair>
 
-<PieceWisePair> ::= '"pw", {' <PieceWiseProperties> '}'
+<PieceWisePair> ::= '"pw", {' <PieceWiseProperties>+ '}'
 <PieceWiseProperties> ::= 'd:' <PieceWiseDComponents>* ','?
+						| 'pwStyle:' String ','?
+						| 'pwClass:' String ','?
 <PieceWiseDComponents> ::= <HorizVertLineSpec>
 						| <MoveLineSmoothCurvetSpec>
 						| <QuadBezierSpec>
@@ -102,16 +122,50 @@ PlusSign = +
 <QuadBezierSpec> ::= (q|Q) ',' (Number ',' Number ',' Number ',' Number ',')+
 <ArcEllipseSpec> ::= (a|A) ',' (Number ',' Number ',' Number ',' Number ',' Number ',' Number ',')+
 
+<TextLabelPair> ::= '"tl", {' <TextLabelProperties>+ '}'
+<TextLabelProperties> ::= 'coords: [' Number ',' Number ']' ','?
+						| 'text: ' String ','?
+						| 'avoidBBox: ' (bool | Number) ','?
+						| 'tlStyle: ' String ','?
+						| 'tlClass: ' String ','?
+
 <OverUnderString> ::= '"' (0 | {PosInt})* '"'
 
 <GapsPair> ::= 'gaps: "' (<GapsChars> ' '+)* <GapsChars>'"'
 <GapsChars> ::= . | 0 | 1 | 2 | 3 | PipeChar | [ | ] | ( | ) | )( | )) | (( | s | S
 
 <EdgePair> ::= 'edge: [' (SingleQuote <EdgeSpec> SingleQuote ','?)* ']'
-<EdgeSpec> ::=  Char <EdgeShape> Char (' '+ String)?
-<EdgeShape> ::= Hyphen | ~ | Hyphen~ | ~Hyphen | Hyphen PipeChar | PipeChar Hyphen 
-			| Hyphen PipeChar Hyphen | Hyphen > | ~> | Hyphen ~> | ~ Hyphen > 
-			| Hyphen PipeChar > | PipeChar |> | Hyphen PipeChar Hyphen >  
-			| < Hyphen > | <~> | < Hyphen ~> | < Hyphen PipeChar > 
-			| < Hyphen PipeChar Hyphen > | PlusSign
 
+<EdgeSpec> ::= Char <EdgeShape> Char (' '+ <TspanString>)?
+			|
+			'[' <TDCSpec> ']' <EdgeShape> '[' <TDCSpec> ']' ('[' <EdgeClassName> ']' ('[' <ArrowClassName> ']')?)? (' ' <TspanString>)?
+
+<TDCSpec> ::= <LaneIdx> ':' <XPosition> (',' <YPosition>)?
+			| Char
+
+<EdgeClassName> ::= '' | String
+<ArrowClassName> ::= '' | String
+
+<LaneIdx> ::= '0' | {PosInt}
+<XPosition> ::= Number | <MathExpression>
+<YPosition> ::= Number | <MathExpression>
+
+<MathExpression> ::= <Term> | <MathExpression> '+' <Term> | <MathExpression> '-' <Term>
+<Term> ::= <Factor> | <Term> '*' <Factor> | <Term> '/' <Factor> | <Term> '%' <Factor>
+<Factor> ::= <MathPrimary> | '-' <Factor> | '+' <Factor>
+<MathPrimary> ::= Number | '(' <MathExpression> ')'
+
+<EdgeShape> ::= <ShapeWithLabelPosition>
+			  | <ShapeWithNumArrows>
+
+<ShapeWithLabelPosition> ::= '<' <LabPosSpecifier> '>' 
+						   | '>' <LabPosSpecifier> '<'
+						   | '+' <LabPosSpecifier> '+'
+<LabPosSpecifier> ::= '' | {Digit8}
+
+<ShapeWithNumArrows> ::= '<' <ArcShape> '>'
+					   | <ArcShape> '>'
+					   | <StandaloneArcShape>
+
+<ArcShape> ::= '~' | '-~' | '~-' | '-|' | '-|-' | '|-' 
+<StandaloneArcShape> ::= <ArcShape> | '-' | '+'
