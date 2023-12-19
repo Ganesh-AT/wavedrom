@@ -1,0 +1,18 @@
+{
+  head: {text: 'New Skins with Professional Markers & Slow Rise / Fall Times Support'},
+  foot: {text: 'Other Features: Fit-to-Pane, Sharp Z Transitions, & Multi-Skin Support'},
+  config: {skin: 'professional', arcFontSize: 8, fit2pane: 1 }, 
+  signal: [
+    {node: '.Z...'},
+    {name: 'clk-normal', wave: '01'.repeat(6), node: '.A.B.'},
+    {node: '.Y...', overrideSkin: 'professional_srf',},
+    {name: 'clk-slowrf', wave: '01'.repeat(6), node: '.C.D.', overrideSkin: 'professional_srf',},{},
+    {name: 'en-normal', wave: '0...1.0z1z2z', node: '....E'},{},
+    {name: 'en-sharpz', wave: '0...1.0z1z2z', overrideSkin: 'professional_sharpz'},{}
+  ],
+  edge: [
+    'A-Z','Z<>B t<sub>NORMAL</sub>',
+    'C-Y','Y><D t<sub>SLOW-RISE-FALL</sub>',
+    'D~>E t<sub>OEN-DLY</sub>'    
+  ],  
+}
