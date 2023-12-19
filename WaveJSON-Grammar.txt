@@ -82,6 +82,7 @@ PlusSign = +
 					| 'phase: ' Number ','?
 					| 'over: ' <OverUnderString> ','?
 					| 'under:' <OverUnderString> ','?
+					| 'data: ' Array ','?
 					| 'node': String ','?
 
 <WaveString> ::= '"' <WaveChars>* '"'
