@@ -1,0 +1,116 @@
+"Name"     = WaveJSON Grammar (for WaveDrom 3.3.0)
+"Author"   = Ganesh T S
+"Version"  = 3.3
+"About"    = 'Grammar for WaveJSON Data
+
+"Start Symbol" = <WaveJson>
+"Case Sensitive" = True
+"Character Mapping" = 'Unicode'
+
+! ------------------------------------------------- Sets
+
+{Unescaped} = {All Valid} - {&1 .. &19} - ["\]
+{Hex} = {Digit} + [ABCDEFabcdef]
+{Digit9} = {Digit} - [0]
+{PosInt} = {Digit9}{Digit}*
+{Integer} = '-'?('0'|{PosInt})
+{StringWithSpacedChars} = '"' (String ' ')+ '"'
+{LabelPosDigits} = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
+
+! ------------------------------------------------- Terminals
+
+Number = {Integer}('.'{Digit}+)?([Ee][+-]?{Digit}+)?
+Char = ({Unescaped}|'\'(["\/bfnrt]|'u'{Hex}{Hex}{Hex}{Hex}))
+String = '"'({Unescaped}|'\'(["\/bfnrt]|'u'{Hex}{Hex}{Hex}{Hex}))*'"'
+Bool   = 'true' | 'false' | '0' | '1'
+PipeChar = |
+SingleQuote = '
+Hyphen = -
+PlusSign = +
+
+! ------------------------------------------------- Rules
+
+<WaveJson> ::= <Object>
+
+<Object> ::= '{' <Members>? '}'
+
+<Members> ::= <ConfigPair>
+			| <HeadPair>
+			| <FootPair>
+			| <SignalPair>
+			| <GapsPair>
+			| <EdgePair>
+			
+<ConfigPair> ::= 'config: {' <ConfigProperties>+ '}' ','?
+				
+<ConfigProperties> ::= 'skin: ' String ','?
+					| 'hscale: ' {PosInt} ','?
+					| 'hbounds: [' '0'|{PosInt} ',' {PosInt} ']' ','?
+					| 'marks: ' Bool ','?
+					| 'arcFontSize: ' {PosInt} ','?
+					
+<HeadPair> ::= 'head: {' <HeadFootProperties>+ '}' ','?
+<FootPair> ::= 'foot: {' <HeadFootProperties>+ '}' ','?
+
+<HeadFootProperties> ::= 'tick: ' <TickTockTypes> ','?
+					| 'tock: ' <TickTockTypes> ','?
+					| 'text: ' <TspanString> ','?
+					| 'every: ' Number ','?
+
+<TickTockTypes> ::= Number
+				| Bool
+				| String 
+				| {StringWithSpacedChars}
+				| <Array>
+
+<Array> ::= '[' ']'
+		| '[' <Elements> ']'
+
+<Elements> ::= <Value>
+			| <Value> ',' <Elements>
+
+<Value> ::= String | Number			
+
+<TspanString> ::= String 
+				| '[' "tspan" (',' '{' ('"'String'" :' ('"'String'"'|Number) ',')* '}')? ',' <TspanString> ']' 
+
+<SignalPair> ::= 'signal: [' <SignalProperties>+ ']' ','?
+
+<SignalProperties> ::= 'name: ' <TspanString> ','?
+					| 'wave: ' (<WaveString>|<WaveObject>) ','?
+					| 'period: ' Number ','?
+					| 'phase: ' Number ','?
+					| 'over: ' <OverUnderString> ','?
+					| 'under:' <OverUnderString> ','?
+					| 'node': String ','?
+
+<WaveString> ::= '"' <WaveChars>* '"'
+<WaveChars> ::= p | n | P | N | h | l | H | L | 0 | x | d | u | z | = | 0 | {PosInt} | PipeChar | . | < | >
+
+<WaveObject> ::= '[' <WaveObjectMemberPair> ']'
+<WaveObjectMemberPair> ::= <PieceWisePair>
+
+<PieceWisePair> ::= '"pw", {' <PieceWiseProperties> '}'
+<PieceWiseProperties> ::= 'd:' <PieceWiseDComponents>* ','?
+<PieceWiseDComponents> ::= <HorizVertLineSpec>
+						| <MoveLineSmoothCurvetSpec>
+						| <QuadBezierSpec>
+						| <ArcEllipseSpec>
+<HorizVertLineSpec> ::= (h|H|v|V) ',' (Number ',')+ 
+<MoveLineSmoothCurvetSpec> ::= (m|M|l|L|t|T) ',' (Number ',' Number ',')+
+<QuadBezierSpec> ::= (q|Q) ',' (Number ',' Number ',' Number ',' Number ',')+
+<ArcEllipseSpec> ::= (a|A) ',' (Number ',' Number ',' Number ',' Number ',' Number ',' Number ',')+
+
+<OverUnderString> ::= '"' (0 | {PosInt})* '"'
+
+<GapsPair> ::= 'gaps: "' (<GapsChars> ' '+)* <GapsChars>'"'
+<GapsChars> ::= . | 0 | 1 | 2 | 3 | PipeChar | [ | ] | ( | ) | )( | )) | (( | s | S
+
+<EdgePair> ::= 'edge: [' (SingleQuote <EdgeSpec> SingleQuote ','?)* ']'
+<EdgeSpec> ::=  Char <EdgeShape> Char (' '+ String)?
+<EdgeShape> ::= Hyphen | ~ | Hyphen~ | ~Hyphen | Hyphen PipeChar | PipeChar Hyphen 
+			| Hyphen PipeChar Hyphen | Hyphen > | ~> | Hyphen ~> | ~ Hyphen > 
+			| Hyphen PipeChar > | PipeChar |> | Hyphen PipeChar Hyphen >  
+			| < Hyphen > | <~> | < Hyphen ~> | < Hyphen PipeChar > 
+			| < Hyphen PipeChar Hyphen > | PlusSign
+
