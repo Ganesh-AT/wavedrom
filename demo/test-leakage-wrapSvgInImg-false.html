@@ -1,0 +1,69 @@
+<html>
+<header>
+	<script src="../skins/default.js"></script>
+        <script src="../skins/narrow.js"></script>
+        <script src="../skins/lowkey.js"></script>
+        <script src="../skins/professional.js"></script>
+        <script src="../skins/professional_srf.js"></script>
+        <script src="../skins/professional_sharpz.js"></script>
+        <script src="../wavedrom.min.js"></script> 
+</header>
+
+<body onload="WaveDrom.ProcessAll()">
+
+<p>
+<script type="WaveDrom">
+{ head: {text: 'wrapSvgInImg - False : Professional Skin'}, 
+  config: {skin: 'professional', arcFontSize: 8, fit2pane: 0, wrapSvgInImg: 0}, 
+  signal: [  
+    {node: '.Z...'}, 
+    {name: 'clk-normal', wave: '01'.repeat(6), node: '.A.B.'},
+    {node: '.Y...', overrideSkin: 'professional_srf',},
+    {name: 'clk-slowrf', wave: '01'.repeat(6), node: '.C.D.', overrideSkin: 'professional_srf',},{},
+    {name: 'en-normal', wave: '0...1.0z1z2z', node: '....E'},{},
+  ],
+  edge: [
+    'A-Z','Z<>B t<sub>NORMAL</sub>',
+    'C-Y','Y><D t<sub>SLOW-RISE-FALL</sub>',
+    'D~>E t<sub>OEN-DLY</sub>'
+  ],
+}
+</script>
+</p>
+<p>
+<script type="WaveDrom">
+{ head: {text: 'wrapSvgInImg - False : Default Skin'}, 
+  config: {skin: 'default', arcFontSize: 8, fit2pane: 0, wrapSvgInImg: 0}, 
+  signal: [  
+    {node: '.Z...'}, 
+    {name: 'clk-normal', wave: '01'.repeat(6), node: '.A.B.'},
+    {node: '.Y...', overrideSkin: 'professional_srf',},
+    {name: 'clk-slowrf', wave: '01'.repeat(6), node: '.C.D.', overrideSkin: 'professional_srf',},{},
+    {name: 'en-normal', wave: '0...1.0z1z2z', node: '....E'},{},
+  ],
+  edge: [
+    'A-Z','Z<>B t<sub>NORMAL</sub>',
+    'C-Y','Y><D t<sub>SLOW-RISE-FALL</sub>',
+    'D~>E t<sub>OEN-DLY</sub>'
+  ],
+}
+</script>
+<p>
+<script type="WaveDrom">
+{ head: {text: 'wrapSvgInImg - False : narrow Skin'}, 
+  config: {skin: 'narrow', arcFontSize: 8, fit2pane: 0, wrapSvgInImg: 0}, 
+  signal: [  
+    {node: '.Z...'}, 
+    {name: 'clk-narrow', wave: '01'.repeat(6), node: '.A.B.'},
+    {node: '.Y...', },
+    {name: 'clk-repeat', wave: '01'.repeat(6), node: '.C.D.',},{},
+    {name: 'en-narrow', wave: '0...1.0z1z2z', node: '....E'},{},
+  ],
+  edge: [
+    'A-Z','Z<>B t<sub>NRW</sub>',
+    'C-Y','Y><D t<sub>RPT</sub>',
+    'D~>E t<sub>OEN-DLY</sub>'
+  ],
+}
+</script>
+</p>

@@ -1,0 +1,106 @@
+<html>
+<header>
+	<script src="../skins/default.js"></script>
+        <script src="../skins/narrow.js"></script>
+        <script src="../skins/lowkey.js"></script>
+        <script src="../skins/professional.js"></script>
+        <script src="../skins/professional_srf.js"></script>
+        <script src="../skins/professional_sharpz.js"></script>
+        <script src="../wavedrom.min.js"></script> 
+</header>
+
+<body onload="WaveDrom.ProcessAll();document.getElementById('verinfo').innerHTML = '<h1>WaveDrom v' + WaveDrom.version + '<h1>';">
+
+<table width="100%">
+	<tr> <td colspan="3" id="verinfo" align="center"></td> </tr>
+	<tr>
+		<td align="center" width="50%"><h1>Normal (No hbounds) - Wave</h1></td>
+		<td align="center" width="25%"><h1>hbounds[9:16]</h1></td>
+		<td align="center" width="25%"><h1>hbounds[9:15.5]</h1></td>
+	</tr>
+	<tr>
+		<td align="center">
+
+<p>
+<script type="WaveDrom">
+  {
+  config: {skin: 'default', marks: true, 
+           // hbounds: [9,15.5],
+	   hscale:1 ,
+           fit2pane: true
+          },
+  head: {tick: 0},
+  edge: ['a-h','b-g','c-f','d-e'],
+  signal: [
+    {name: 'CLK', wave: '101010101010100',
+     node: '.....a....b...c..d', phase: 0.2},
+    {name: 'CLKNP', wave: '01010101010100', phase: 0},
+    {name: 'CLK', wave: '1101010101010100', phase: -0.5},
+    {name: 'CLKNP', wave: '001010101010100', phase: 0},
+    {name: 'DTA', wave: '8.2.3.4.5.6.7.8.2.3', 
+     node: '..e.......f....g.h', phase: 0},
+    {name: 'DTAP', wave: '8.2.3.4.5.6.7....', phase: 2.15},
+    {name: 'DTAM', wave: '8.2.3.4.5.6.7....8', phase: -1},
+  ]
+}
+</script>
+</p>
+		</td>
+		<td align="center">
+<p>
+<script type="WaveDrom">
+  {
+  config: {skin: 'default', marks: true, 
+           hbounds: [9,16],
+	   hscale:1 ,
+           fit2pane: true
+          },
+  head: {tick: 0},
+  edge: ['a-h','b-g','c-f','d-e'],
+  signal: [
+    {name: 'CLK', wave: '101010101010100',
+     node: '.....a....b...c..d', phase: 0.2},
+    {name: 'CLKNP', wave: '01010101010100', phase: 0},
+    {name: 'CLK', wave: '1101010101010100', phase: -0.5},
+    {name: 'CLKNP', wave: '001010101010100', phase: 0},
+    {name: 'DTA', wave: '8.2.3.4.5.6.7.8.2.3', 
+     node: '..e.......f....g.h', phase: 0},
+    {name: 'DTAP', wave: '8.2.3.4.5.6.7....', phase: 2.15},
+    {name: 'DTAM', wave: '8.2.3.4.5.6.7....8', phase: -1},
+  ]
+}
+</script>
+</p>
+		</td>
+		<td align="center">
+<p>
+<script type="WaveDrom">
+  {
+  config: {skin: 'default', marks: true, 
+           hbounds: [9,15.5],
+	   hscale:1 ,
+           fit2pane: true
+          },
+  head: {tick: 0},
+  edge: ['a-h','b-g','c-f','d-e'],
+  signal: [
+    {name: 'CLK', wave: '101010101010100',
+     node: '.....a....b...c..d', phase: 0.2},
+    {name: 'CLKNP', wave: '01010101010100', phase: 0},
+    {name: 'CLK', wave: '1101010101010100', phase: -0.5},
+    {name: 'CLKNP', wave: '001010101010100', phase: 0},
+    {name: 'DTA', wave: '8.2.3.4.5.6.7.8.2.3', 
+     node: '..e.......f....g.h', phase: 0},
+    {name: 'DTAP', wave: '8.2.3.4.5.6.7....', phase: 2.15},
+    {name: 'DTAM', wave: '8.2.3.4.5.6.7....8', phase: -1},
+  ]
+}
+</script>
+</p>
+		</td>
+	</tr>
+</table>
+
+</body>
+
+</html>
