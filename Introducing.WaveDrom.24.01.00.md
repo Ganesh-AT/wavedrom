@@ -39,7 +39,7 @@
     -   [Project Roadmap](#project-roadmap){#toc-project-roadmap}
         -   [Known Issues](#known-issues){#toc-known-issues}
         -   [Pull-Request Submission
-            Invites](#pull-request-submission-invites){#toc-pull-request-submission-invites}
+            Invites](#pull-request-submission-invites)
 
 # Introducing WaveDrom 24.01
 
