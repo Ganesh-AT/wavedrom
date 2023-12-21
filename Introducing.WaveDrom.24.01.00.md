@@ -273,7 +273,7 @@ Backwards compatibility can be obtained by explicity turning off the
 file](demo/test-leakage-wrapSvgInImg-false.html). A screenshot of this
 rendering is shown below.
 
-![](demo/style-Leakage-Test-wrapSvgInImg-False.png)
+![](demo/style-Leakage-Test-wrapSvgInImg-false.png)
 
 Two different aspects are worth pointing out here. The markers in the
 diagrams with the *default* and *narrow* skins end up using the elements
