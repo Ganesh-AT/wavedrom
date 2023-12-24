@@ -1,7 +1,7 @@
-"Name"     = WaveJSON Grammar (for WaveDrom 3.3.0)
+"Name"     = WaveJSON Grammar (for WaveDrom 24.01)
 "Author"   = Ganesh T S
-"Version"  = 3.3
-"About"    = 'Grammar for WaveJSON Data
+"Version"  = 24.01
+"About"    = Grammar for WaveJSON Data
 
 "Start Symbol" = <WaveJson>
 "Case Sensitive" = True
@@ -17,6 +17,8 @@
 {Integer} = '-'?('0'|{PosInt})
 {StringWithSpacedChars} = '"' (String ' ')+ '"'
 {LabelPosDigits} = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8'
+{LaneIdStringRegex} = ([a-z]|[A-Z]|_)([a-z]|[A-Z]|[0-9]|_)*
+{LaneIdString} = '"' {LaneIdStringRegex} '"'
 
 ! ------------------------------------------------- Terminals
 
@@ -96,7 +98,8 @@ PlusSign = +
 					| 'node_tpos:' String ','?
 					| 'dlStyle:' String ','?
 					| 'dlClass:' String ','?
-					| 'overlayOnLane:' ('0'|{PosInt}) ','?
+					| 'id:' {LaneIdString} ','?
+					| 'overlayOnLane:' ('0'|{PosInt}|{LaneIdString}) ','?
 					| 'addGapsPhase:' Number ','?
 					| 'overrideSkin:' String ','?
 					| 'skinStyle:' String ','?
@@ -146,7 +149,7 @@ PlusSign = +
 <EdgeClassName> ::= '' | String
 <ArrowClassName> ::= '' | String
 
-<LaneIdx> ::= '0' | {PosInt}
+<LaneIdx> ::= '0' | {PosInt} | {LaneIdStringRegex}
 <XPosition> ::= Number | <MathExpression>
 <YPosition> ::= Number | <MathExpression>
 
