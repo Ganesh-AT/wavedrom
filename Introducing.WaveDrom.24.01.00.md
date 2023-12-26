@@ -373,7 +373,6 @@ others.
 The table below summarizes the different ways to fine-tune the
 appearance of various elements.
 
-```{=html}
 <table style="width:100%">
     <tr>
         <td style="text-align:center;vertical-align:middle;width:17.5%"><b>Element</b></td>
@@ -452,7 +451,7 @@ appearance of various elements.
         <td colspan="3" style="text-align:center;vertical-align:middle;width:82.5%">text{} in _config.customStyle_<br/>Entries can be specified using _tspan_ features.</td>
     </tr>
 </table>
-```
+
 The [ObservableHQ
 Playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-tuning-rendering-results-with-customstyle)
 links to the following SVGs by default.
