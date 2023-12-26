@@ -1,49 +1,28 @@
--   [Introducing WaveDrom
-    24.01](#introducing-wavedrom-24.01){#toc-introducing-wavedrom-24.01}
-    -   [Background and
-        Motivation](#background-and-motivation){#toc-background-and-motivation}
-    -   [WaveJSON Grammar](#wavejson-grammar){#toc-wavejson-grammar}
-    -   [Feature Set
-        Updates](#feature-set-updates){#toc-feature-set-updates}
-        -   [New Skins](#new-skins){#toc-new-skins}
-        -   [New Configuration
-            Attributes](#new-configuration-attributes){#toc-new-configuration-attributes}
-        -   [New Signal
-            Attributes](#new-signal-attributes){#toc-new-signal-attributes}
-        -   [New Wave
-            Specifications](#new-wave-specifications){#toc-new-wave-specifications}
-        -   [Revisiting the *edge*
-            Architecture](#revisiting-the-edge-architecture){#toc-revisiting-the-edge-architecture}
-        -   [Miscellaneus
-            Features](#miscellaneus-features){#toc-miscellaneus-features}
-        -   [Grouping of Text Elements for a Better *tspan*
-            Experience](#grouping-of-text-elements-for-a-better-tspan-experience){#toc-grouping-of-text-elements-for-a-better-tspan-experience}
-    -   [Bug Fixes and Issue
-        Resolutions](#bug-fixes-and-issue-resolutions){#toc-bug-fixes-and-issue-resolutions}
-        -   [Fixing up Subcycles
-            Support](#fixing-up-subcycles-support){#toc-fixing-up-subcycles-support}
-        -   [Handling Phase
-            Artifacts](#handling-phase-artifacts){#toc-handling-phase-artifacts}
-        -   [SVG 1.1 Validation
-            Checks](#svg-1.1-validation-checks){#toc-svg-1.1-validation-checks}
-        -   [Cleaning up the *tick* & *tock*
-            Implementation](#cleaning-up-the-tick-tock-implementation){#toc-cleaning-up-the-tick-tock-implementation}
-        -   [Text Labels on Single-Bit
-            Bricks](#text-labels-on-single-bit-bricks){#toc-text-labels-on-single-bit-bricks}
-        -   [Multi-Line Data
-            Labels](#multi-line-data-labels){#toc-multi-line-data-labels}
-    -   [Enabling a Plugin
-        Architecture](#enabling-a-plugin-architecture){#toc-enabling-a-plugin-architecture}
-        -   [Custom Wave Specifications - Trigonometric
-            Functions](#custom-wave-specifications---trigonometric-functions){#toc-custom-wave-specifications---trigonometric-functions}
-        -   [Custom Wave Specifications - Asynchronous
-            Signals](#custom-wave-specifications---asynchronous-signals){#toc-custom-wave-specifications---asynchronous-signals}
-        -   [Custom Wave Specifications - Bipolar
-            Signals](#custom-wave-specifications---bipolar-signals){#toc-custom-wave-specifications---bipolar-signals}
-    -   [Project Roadmap](#project-roadmap){#toc-project-roadmap}
-        -   [Known Issues](#known-issues){#toc-known-issues}
-        -   [Pull-Request Submission
-            Invites](#pull-request-submission-invites){#toc-pull-request-submission-invites}
+-   Introducing WaveDrom 24.01
+    -   Background and Motivation
+    -   WaveJSON Grammar
+    -   Feature Set Updates
+        -   New Skins
+        -   New Configuration Attributes
+        -   New Signal Attributes
+        -   New Wave Specifications
+        -   Revisiting the *edge* Architecture
+        -   Miscellaneus Features
+        -   Grouping of Text Elements for a Better *tspan* Experience
+    -   Bug Fixes and Issue Resolutions
+        -   Fixing up Subcycles Support
+        -   Handling Phase Artifacts
+        -   SVG 1.1 Validation Checks
+        -   Cleaning up the *tick* & *tock* Implementation
+        -   Text Labels on Single-Bit Bricks
+        -   Multi-Line Data Labels
+    -   Enabling a Plugin Architecture
+        -   Custom Wave Specifications - Trigonometric Functions
+        -   Custom Wave Specifications - Asynchronous Signals
+        -   Custom Wave Specifications - Bipolar Signals
+    -   Project Roadmap
+        -   Known Issues
+        -   Pull-Request Submission Invites
 
 # Introducing WaveDrom 24.01
 
@@ -51,16 +30,16 @@
 
 WaveDrom is a timing diagram (waveform) generator widely used in
 engineering circles. It converts textual description specified as a JSON
-object ('WaveJSON' in WaveDrom parlance) into a vector graphics file (in
-the SVG format). The use of vector graphics ensures that the diagrams
-are of high quality and resistant to scaling artifacts. The software
-uses a library of 'bricks' ('skin' in WaveDrom parlance) to assemble
-waveforms. The usage of standard building blocks ensures a consistent
-look for the rendering of different signal lanes. Waveforms created by
-different users also tend to have a consistent look as long as the same
-skin is being used. By virtue of being written in JavaScript, the
-software is inherently cross-platform and can be run locally using any
-modern web browser.
+object (\'WaveJSON\' in WaveDrom parlance) into a vector graphics file
+(in the SVG format). The use of vector graphics ensures that the
+diagrams are of high quality and resistant to scaling artifacts. The
+software uses a library of \'bricks\' (\'skin\' in WaveDrom parlance) to
+assemble waveforms. The usage of standard building blocks ensures a
+consistent look for the rendering of different signal lanes. Waveforms
+created by different users also tend to have a consistent look as long
+as the same skin is being used. By virtue of being written in
+JavaScript, the software is inherently cross-platform and can be run
+locally using any modern web browser.
 
 The clean and consistent look of the WaveDrom output makes it a
 candidate for generating professional electrical diagrams. These are
@@ -92,7 +71,7 @@ verification, a large number of bug fixes addressing existing open
 issues was also made.
 
 WaveDrom 24.01 incorporates all the updates made over the last four
-years in Ambarella's custom fork. It aims to extend WaveDrom's feature
+years in Ambarella\'s custom fork. It aims to extend WaveDrom\'s feature
 set to address technical documentation requirements from a marketing
 perspective while firming up its credentials as the de-facto solution
 for engineers. As part of this overhaul, updates have been made to the
@@ -118,8 +97,8 @@ The new grammar is completely backwards-compatible, meaning that valid
 WaveJSON inputs for WaveDrom 3.3.0 will continue to work with WaveDrom
 24.01. The rendered output also remains the same, except for bug fixes.
 
-A quick overview of the new features is obtained via Github's [diff view
-of the two grammar
+A quick overview of the new features is obtained via Github\'s [diff
+view of the two grammar
 representations](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4).
 The remainder of this document analyzes each update in detail, along
 with links to examples However, a look at the new skins included in
@@ -132,7 +111,7 @@ WaveDrom 24.01 is in order first.
 The WaveDrom skins dictate the appearance of various bricks along with
 the styles of the markers used in the arcs (edge specifications).
 Subjectively speaking, the marker style in the *default* skin is
-slightly over-sized and has too much of an offset from the arc's end
+slightly over-sized and has too much of an offset from the arc\'s end
 points for professional documents. After a few trials, new marker styles
 were finalized and incorporated into a new *professional* skin. This
 formed the basis for the two additional skins described below.
@@ -140,20 +119,20 @@ formed the basis for the two additional skins described below.
 Some timing diagrams require the annotation of different threshold
 levels. The rise and fall times of the signals in the *default* skin are
 too short to bring those out in an uncluttered manner. A new
-*professional_srf* skin was prepared with signal transitions over 11
-horizontal units (compared to the 6 in the *default* skin).
+\*professional*srf\* skin was prepared with signal transitions over 11
+horizontal units (compared to the 6 in the *default\_ skin).
 
 The representation of the transition to high-impedance states in the
 *default* skin is electrically accurate, but technical document
 requirements dictate a professional look with sharp transitions. The
-bundled *professional_sharpz* skin addresses this aspect.
+bundled \*professional_sharpz\* skin addresses this aspect.
 
 [Using the Professional Skins - WaveJSON](demo/professional-skins.json)
 
 [ObservableHQ
 Playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-professional-skins-fit2pane)
 \[ Manually process the first cell with the FileAttachment list if the
-rendering doesn't match the SVG output below \].
+rendering doesn\'t match the SVG output below \].
 
 ![](demo/professional-skins.svg)
 
@@ -181,7 +160,7 @@ aspect that is not possible with pre-generated skins.
 It must be noted that the fractional *hscale* is not a straightforward
 scaling operation on the whole diagram. Only the rendered bricks and
 edge / node coordinates are scaled. Squished labels and arrows are
-avoided by retaining the text and marker sizes based on the diagram's
+avoided by retaining the text and marker sizes based on the diagram\'s
 skin and other configuration parameters.
 
 [Exploring Fractional *hscale* - WaveJSON](demo/fractional-hscale.json)
@@ -225,10 +204,10 @@ Playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-0-fit2pane-tru
 
 ![](demo/fit2pane.png)
 
-Enabling this feature doesn't alter the core contents of the rendered
+Enabling this feature doesn\'t alter the core contents of the rendered
 SVG. By default, the width and height of the picture are set to the
-rendered image's absolute width and height. If *fit2pane* is set, the
-width and height are configured to 100% of the picture's container
+rendered image\'s absolute width and height. If *fit2pane* is set, the
+width and height are configured to 100% of the picture\'s container
 element.
 
 #### Avoiding *style* and *defs* Leakage with *wrapSvgInImg*
@@ -247,7 +226,7 @@ oft-raised issue.
 
 WaveDrom 24.01 initially addressed this issue by prefixing each brick
 element in the *defs* section and the utilized class names in the
-*style* section using a skin-based identifier. However, this doesn't
+*style* section using a skin-based identifier. However, this doesn\'t
 address the markers or user-defined styles. A [new configuration bit
 (*wrapSvgInImg*)](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R55)
 is available in WaveDrom 24.01 to prevent leakage of such elements
@@ -280,7 +259,7 @@ Backwards compatibility can be obtained by explicity turning off the
 file](demo/test-leakage-wrapSvgInImg-false.html). A screenshot of this
 rendering is shown below.
 
-![](demo/style-Leakage-Test-wrapSvgInImg-False.png)
+![](demo/style-Leakage-Test-wrapSvgInImg-false.png)
 
 Two different aspects are worth pointing out here. The markers in the
 diagrams with the *default* and *narrow* skins end up using the elements
@@ -292,9 +271,9 @@ elements can be tracked from the same view.
 This config attribute has no impact on the appearance of SVGs rendered
 from standalone WaveJSON inputs. Advanced users might prefer to turn off
 the feature to check up on the organization of the SVG elements using
-the browser's developer tools. This is useful for debugging purposes,
+the browser\'s developer tools. This is useful for debugging purposes,
 but the end users of the software have no reason to bother with altering
-the attribute's default value.
+the attribute\'s default value.
 
 It must also be noted that the brick characteristics do not leak
 irrespective of the configured *wrapSvgInImg* value. The leakage only
@@ -305,7 +284,7 @@ applies to the markers and optional custom styles.
 The SVG specifications provide a *dominant-baseline* attribute for text
 elements. It allows the fine-tuning of the placement of the text
 relative to the specified coordinates. In most cases, the default
-settings combined with WaveDrom's coordinates computation provide an
+settings combined with WaveDrom\'s coordinates computation provide an
 acceptable appearance for the labels spcified in the WaveJSON *edge*
 object. In rare cases, it might be necessary to tweak the placement. The
 [new *txtBaseline* configuration
@@ -322,8 +301,8 @@ Playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-txtbaseline)
 
 This feature is recommended for use only in small diagrams with few arc
 / edge labels. Complex diagrams often require much more flexibility,
-which is provided by the user-configurable *arc_label* style class in
-the *customStyle* option. WaveDrom 24.01 also brings in *tspan* support
+which is provided by the user-configurable \*arc*label\* style class in
+the *customStyle\_ option. WaveDrom 24.01 also brings in *tspan* support
 for edge labels, and that allows for per-label modification using native
 CSS attributes.
 
@@ -349,7 +328,7 @@ appearance are documented
 It includes the default style for all text elements as the first entry.
 It must be noted that the specifications for the classes used by the
 bricks are not part of the above extract, as they are sourced from the
-skin's SVG.
+skin\'s SVG.
 
 The elements corresponding to the different style classes can be
 inferred from the WaveDrom parlance for different components of a
@@ -376,15 +355,15 @@ components
 
 ![](demo/WaveDrom-Anno-pw-Skin.svg)
 
-WaveDrom renders diagrams using a collection of 'bricks' from a library
-(the *skin* specified in the *config* object). Each character in the
-*wave* string corresponds to two bricks under the default settings of
-*hscale* and *period* being 1. In the sub-cycle mode, each character
+WaveDrom renders diagrams using a collection of \'bricks\' from a
+library (the *skin* specified in the *config* object). Each character in
+the *wave* string corresponds to two bricks under the default settings
+of *hscale* and *period* being 1. In the sub-cycle mode, each character
 corresponds to one brick. The render above also shows piece-wise linear
 waveforms specified using the *pw* feature of the *wave* attribute.
 
 The *customStyle* attribute in the *config* object is a user-supplied
-string that gets appended to the skin's *style* entry. The placement at
+string that gets appended to the skin\'s *style* entry. The placement at
 the end ensures that previous element and class entries can be
 completely overridden, if desired. Obviously, style sets with new class
 names can also be specified. The WaveDrom engine supports pre-defined
@@ -395,139 +374,85 @@ The table below summarizes the different ways to fine-tune the
 appearance of various elements.
 
 ```{=html}
-<table style="width:90%">
-```
-```{=html}
-<tr>
-```
-```{=html}
-<td style="text-align:center;vertical-align:middle;width:17.5%">
-```
-`<b>`{=html}Element`</b>`{=html}
-```{=html}
-</td>
-```
-```{=html}
-<td style="text-align:center;vertical-align:middle;width:27.5%">
-```
-`<b>`{=html}Waveform-Wide Customization`</b>`{=html}
-```{=html}
-</td>
-```
-```{=html}
-<td style="text-align:center;vertical-align:middle;width:27.5%">
-```
-`<b>`{=html}Per-Lane Customization`</b>`{=html}
-```{=html}
-</td>
-```
-```{=html}
-<td style="text-align:center;vertical-align:middle;width:27.5%">
-```
-`<b>`{=html}Per-Element Customization`</b>`{=html}
-```{=html}
-</td>
-```
-```{=html}
-</tr>
-```
-```{=html}
-<tr>
-```
-```{=html}
-<td colspan="4">
-```
- 
-```{=html}
-</td>
-```
-```{=html}
-</tr>
-```
-```{=html}
-<tr>
-```
-```{=html}
-<td style="vertical-align:middle;">
-```
-Arc Paths`</a>`{=html}
-```{=html}
-<td style="vertical-align:middle;">
-```
-.arc_path{} in *config.customStyle*
-```{=html}
-</td>
-```
-        <td style="text-align:center;vertical-align:middle;">Not Applicable</td>
-        <td style="vertical-align:middle;">Custom classes in _config.customStyle_ referenced in the edge specifier</td>
+<table style="width:100%">
+    <tr>
+        <td style="text-align:center;vertical-align:middle;width:17.5%"><b>Element</b></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%"><b>Waveform-Wide Customization</b></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%"><b>Per-Lane Customization</b></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%"><b>Per-Element Customization</b></td>
+    </tr>
+    <tr>
+        <td colspan="4">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style="vertical-align:middle;">Arc Paths</a>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">.arc_path{} in <i>config.customStyle</i></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Not Applicable</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Custom classes in <i>config.customStyle</i> referenced in the edge specifier</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Group Paths</a>
-        <td style="vertical-align:middle;">.group\_path{} in _config.customStyle_</td>
-        <td style="text-align:center;vertical-align:middle;">Not Applicable</td>
-        <td style="vertical-align:middle;">Not Available</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">.group_path{} in <i>config.customStyle</i></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Not Applicable</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Not Available</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Arc Labels</a>
-        <td style="vertical-align:middle;">.arc\_label{} &amp; text{} in _config.customStyle_</td>
-        <td style="text-align:center;vertical-align:middle;">Not Applicable</td>
-        <td style="vertical-align:middle;">Edge labels support _tspan_, but per-element customization for visible named nodes is not available.</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">.arc_label{} &amp; text{} in <i>config.customStyle</i></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Not Applicable</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Edge labels support <i>tspan</i>, but per-element customization for visible named nodes is not available.</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Group Labels</a>
-        <td style="vertical-align:middle;">.group\_label{} &amp; text{} in _config.customStyle_</td>
-        <td style="text-align:center;vertical-align:middle;">Not Applicable</td>
-        <td style="vertical-align:middle;">Group labels support _tspan_</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">.group_label{} &amp; text{} in <i>config.customStyle</i></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Not Applicable</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Group labels support <i>tspan<i></td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Lane Labels</a>
-        <td style="vertical-align:middle;">.lane\_label{} &amp; text{} in _config.customStyle_</td>
-        <td colspan="2" style="vertical-align:middle;">Lane labels (signal names) can be specified as _tspan_ entries</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">.lane_label{} &amp; text{} in <i>config.customStyle</i></td>
+        <td colspan="2" style="text-align:center;vertical-align:middle;width:27.5%">Lane labels (signal names) can be specified as <i>tspan</i> entries</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Data Labels</a>
-        <td style="vertical-align:middle;">.data\_label{} &amp; text{} in _config.customStyle_</td>
-        <td style="vertical-align:middle;">Custom classes in _config.customStyle_ referenced as _dlClass_, or style directly specified in _dlStyle_</td>
-        <td style="vertical-align:middle;">Data labels can be _tspan_ entries</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">.data_label{} &amp; text{} in <i>config.customStyle</i></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Custom classes in <i>config.customStyle</i> referenced as <i>dlClass</i>, or style directly specified in <i>dlStyle</i></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Data labels can be <i>tspan</i> entries</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Text Labels</a>
-        <td style="vertical-align:middle;">text{} in _config.customStyle_</td>
-        <td style="vertical-align:middle;">Not Applicable</td>
-        <td style="vertical-align:middle;">Custom classes in _config.customStyle_ referenced as _tlClass_, or style directly specified in _tlStyle_.<br/>Finer customization is possible with _tspan_ support.</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">text{} in <i>config.customStyle</i></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Not Applicable</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Custom classes in <i>config.customStyle</i> referenced as <i>tlClass</i>, or style directly specified in <i>tlStyle</i>.<br/>Finer customization is possible with <i>tspan</i> support.</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Piece-Wise Linear Paths</a>
-        <td style="vertical-align:middle;">Not Available</td>
-        <td colspan="2" style="vertical-align:middle;">Custom classes in _config.customStyle_ referenced as _pwClass_, or style directly specified in _pwStyle_.<br/>Different styles in the same lane can be obtained using the _overlayOnLane_ feature.</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Not Available</td>
+        <td colspan="2" style="text-align:center;vertical-align:middle;width:55%">Custom classes in <i>config.customStyle</i> referenced as <i>pwClass</i>, or style directly specified in <i>pwStyle</i>.<br/>Different styles in the same lane can be obtained using the <i>overlayOnLane</i> feature.</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Bricks in Skin</a>
-        <td style="vertical-align:middle;">_skin_ attribute in the _config_ object</td>
-        <td colspan="2" style="vertical-align:middle;">_overrideSkin_ in the signal lane, if such a skin is already available.<br/>Custom classes in _config.customStyle_ referenced as _skinClass_, or style directly specified in _skinStyle_.<br/>Finer customization involving mixture of different skin styles in the same lane can be obtained using the _overlayOnLane_ feature.<br/>In the event of none of the above options being applicable to requirements, the _pw_ feature in the _wave_ component can be used to create a piece-wise linear segment.</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%"><i>skin</i> attribute in the _config_ object</td>
+        <td colspan="2" style="text-align:center;vertical-align:middle;width:55%"><i>overrideSkin</i> in the signal lane, if such a skin is already available.<br/>Custom classes in <i>config.customStyle</i> referenced as <i>skinClass</i>, or style directly specified in <i>skinStyle</i>.<br/>Finer customization involving mixture of different skin styles in the same lane can be obtained using the <i>overlayOnLane</i> feature.<br/>In the event of none of the above options being applicable to requirements, the <i>pw</i> feature in the <i>wave</i> component can be used to create a piece-wise linear segment.</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Tick &amp; Tock Labels</a>
-        <td style="vertical-align:middle;">text{} and .muted{} in _config.customStyle_</td>
-        <td style="vertical-align:middle;">Not Applicable</td>
-        <td style="vertical-align:middle;">Unavailable, but the _tl_ feature in the _wave_ component can be used as a workaround.</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">text{} and .muted{} in <i>config.customStyle</i></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Not Applicable</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Unavailable, but the <i>tl</i> feature in the <i>wave</i> component can be used as a workaround.</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Marks</a>
-        <td style="vertical-align:middle;">.gmarks{} in _config.customStyle_</td>
-        <td style="vertical-align:middle;">Not Applicable</td>
-        <td style="vertical-align:middle;">Unavailable, but the _pw_ feature in the _wave_ component can be used as a workaround.</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">.gmarks{} in <i>config.customStyle</i></td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Not Applicable</td>
+        <td style="text-align:center;vertical-align:middle;width:27.5%">Unavailable, but the <i>pw</i> feature in the <i>wave</i> component can be used as a workaround.</td>
     </tr>
     <tr>
         <td style="vertical-align:middle;">Header &amp; Footer Text</a>
-        <td colspan="3" style="vertical-align:middle;">text{} in _config.customStyle_<br/>Entries can be specified using _tspan_ features.</td>
+        <td colspan="3" style="text-align:center;vertical-align:middle;width:82.5%">text{} in _config.customStyle_<br/>Entries can be specified using _tspan_ features.</td>
     </tr>
-
-```{=html}
 </table>
 ```
-: Configuring the WaveDrom Engine to Customize Waveform Elements
-
 The [ObservableHQ
 Playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-tuning-rendering-results-with-customstyle)
 links to the following SVGs by default.
@@ -565,7 +490,7 @@ attribute](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01
 The default setting for this attribute is *normal*. In this mode, the
 output of the core WaveDrom engine is passed upstream as-is for
 rendering. The *grayscale* and *posterize* modes apply SVG filters to
-the core engine's output.
+the core engine\'s output.
 
 [Configuring the *colorMode* Feature with the *grayscale* Option -
 WaveJSON](demo/colorMode-grayscale.json)
@@ -591,12 +516,12 @@ ObservableHQ Playground
 
 ### New Signal Attributes
 
-#### Multi-Threshold Annotations with *node_tlevel* and *node_tpos*
+#### Multi-Threshold Annotations with \*node_tlevel\* and \*node_tpos\*
 
 WaveDrom 24.01 incorporates multiple schemes for annotating different
 threshold levels. The more readable approach involves [two new signal
-attributes - *node_tlevel* and
-*node_tpos*](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R95-R96).
+attributes - \*node_tlevel\* and
+\*node_tpos\*](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R95-R96).
 
 bla bla TODO bla bla
 
@@ -604,13 +529,14 @@ bla bla TODO bla bla
 
 A timing diagram may have multiple data labels in different signal
 lanes. Requirements dictating the modification of the appearance of all
-data labels can be addressed by specifying the *data_label* class in the
-*customStyle* config attribute. The rendering of data labels can also be
-modified on a per-lane basis using the [new *dlClass* and *dlStyle*
+data labels can be addressed by specifying the \*data*label\* class in
+the *customStyle\_ config attribute. The rendering of data labels can
+also be modified on a per-lane basis using the [new *dlClass* and
+*dlStyle*
 attributes](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R97-R98).
 The new rendering styles can either be specified as a custom class in
 the *customStyle* attribute, which is then used as the value for the
-signal entry's *dlClass* attribute. Alternatively, the styles can be
+signal entry\'s *dlClass* attribute. Alternatively, the styles can be
 specified as in-line CSS using the *dlStyle* attribute. WaveDrom 24.1
 also supports the ultimate flexibility of modifying the rendering style
 on a per-data label basis by incorporating *tspan* support for each
@@ -684,7 +610,7 @@ WaveDrom supports native export of rendered diagrams to SVG or PNG via a
 context menu. This is available for embedded diagrams rendered via the
 ProcessAll feature. The SVG exported by WaveDrom 3.3.0 includes all
 element definitions in the used skin, even when the rendered diagram
-doesn't make use of all of them. WaveDrom 24.01 supports multiple skins
+doesn\'t make use of all of them. WaveDrom 24.01 supports multiple skins
 in the same diagram, along with per-lane skin overrides and custom skin
 styles. This may cause a linear increase in the number of element
 definitions in the rendered SVG.
@@ -723,8 +649,9 @@ exact replica of the original source code.
 
 The source has to be enclosed within a comments section in order to pass
 SVG 1.1 validation checks. The first line in this section also includes
-the SVG-exporting WaveDrom's version information. The editor application
-incorporates support for importing SVGs with such embedded metadata.
+the SVG-exporting WaveDrom\'s version information. The editor
+application incorporates support for importing SVGs with such embedded
+metadata.
 
 #### Improved PNG Export
 
@@ -810,7 +737,7 @@ the text label coordinates independently.
 
 bla bla TODO bla bla
 
-related to *node_tlevel* and *node_tpos* features
+related to \*node_tlevel\* and \*node_tpos\* features
 
 ## Bug Fixes and Issue Resolutions
 
@@ -848,21 +775,22 @@ https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-using-plugins
 
 ### Custom Wave Specifications - Trigonometric Functions
 
-Signal object supports following attributes: { name: 'trig-signal-name',
-phase: float, overlayOnLane: lane-number, wave: \[ 'sin\|cos', { f:
-float, repeat: int, amp: float, phi: float_in_degrees } \] }
+Signal object supports following attributes: { name:
+\'trig-signal-name\', phase: float, overlayOnLane: lane-number, wave: \[
+\'sin\|cos\', { f: float, repeat: int, amp: float, phi: float_in_degrees
+} \] }
 
 bla bla TODO bla bla
 
 ### Custom Wave Specifications - Asynchronous Signals
 
-{ name: 'async-signal-name', overlayOnLane: lane-number wave: \[
-'async', { seq: '', // 0 or 1 or z ; x is TODO cTimes: \[ \], rTime:
+{ name: \'async-signal-name\', overlayOnLane: lane-number wave: \[
+\'async\', { seq: \'\', // 0 or 1 or z ; x is TODO cTimes: \[ \], rTime:
 float, // fraction of a period fTime: float, // fraction of a period
 sharpz: bool, // false by default } }
 
-sig = { wave: \[ 'async', { seq: '0101', cTimes: \[2.1,3,5,7.3,8.2\],
-rTime: 0.2, fTime: 0.3, sharpz: true } \], }
+sig = { wave: \[ \'async\', { seq: \'0101\', cTimes:
+\[2.1,3,5,7.3,8.2\], rTime: 0.2, fTime: 0.3, sharpz: true } \], }
 
 bla bla TODO bla bla
 
