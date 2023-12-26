@@ -1,0 +1,73 @@
+{
+    config: { skin: 'professional', hscale: 2, marks: true, fit2pane: true, 
+               customStyle: 
+// 				'.arc_path{stroke-dasharray:1}' + 
+// 				'.group_path{stroke:red}' +
+// 				'.arc_label{fill:#ff00ff}'+
+// 				'.group_label{fill:#0000ff;font-size:12px}' +
+// 				'.customRedEdge{stroke:red}' +
+// 				'.gmarks{stroke:#000000;stroke-width:1;stroke-dasharray:6}' + 
+// 				'.muted{fill:red;opacity:0.8}' +
+// 				'text{font-family:monospace}' +
+// 				'.data_label{font-family:Helvetica}' + 
+// 				'.customRedArrow{fill:red}' +
+ 				'',             
+			   wrapSvgInImg:0 },
+    head: { tick: 0, 
+             text: 'Custom Protocol for Client - Memory Arbiter (dram) Communication' },
+    foot: { tock: 0.5, 
+             text: 'WaveDrom Timing Diagram Components' },
+    signal: [
+      {name: 'gclk_client',        wave: 'p......|...',},
+      {},
+      {},
+      [ 
+        ['tspan',{'fill': '#0041c4', 'font-size': '11pt'},'Request Bus'],
+        {name: '[client]_dram_req_vld_p1',  wave: '1101010<.|..>...', 
+         id: 'rqvld', 
+         overrideSkin: 'professional_srf'},
+        {name: 'dram_[client]_req_cdt',  wave: '0...110<.|..>101',},
+        {name: 'dram_[client]_req_ack',  wave: '0....10<.|..>.11',},
+        {name: '[client]_dram_req_write',  wave: 'x10x0x0<x|..>...',},
+        {name: '[client]_dram_req_addr',  wave: 'x==x=x=<x|..>...', 
+         data: ["A0(W)","A1(R)","A2(R)","A3(R)"]},
+        {name: '[client]_dram_req_bcnt_m1',  wave: 'x==x=x=<x|..>...', 
+         data: ["23","19","255","127"]},
+      ],
+      {},
+      {},
+      [
+        ['tspan',{'fill': '#0041c4', 'font-size': '11pt'},'Write Channel'],           
+        [
+          'write data',
+          {name: '[client]_dram_wdata_vld_p1[3:0]', wave: '=.==..|....', 
+           data: ['0','N','0'], id: 'wvld'},
+          {name: '[client]_dram_wdata[255:0]', wave: 'x..=x.|....', 
+           data: ['data'], node: '....g......'},
+        ],
+        {node: '....e..f...', },
+        [
+          'credits return',
+          {name: 'dram_[client]_wdata_credits_vld_p1', 
+           wave: '0.....|10..', node: '.......h...'},
+          {name: 'dram_[client]_wdata_credits_m1', wave: 'x.....|.=x.', data: ['credits']},
+        ],
+      ],
+      {},
+      {},
+      [
+        ['tspan',{'fill': '#0041c4', 'font-size': '11pt'},'Read Channel'],
+        {name: 'dram_[client]_rdata_vld_p1', wave: '0.10..|....', node: '....A..B...'},
+        {name: 'dram_[client]_rdata', wave: 'x..=x.|....', data: ['data'], node: '....C......'},{},
+        {name: '[client]_dram_rdata_credit_vld_p1', wave: '0.....|10..', node: '.......D...'},
+        {name: '[client]_dram_rdata_credits_m1', wave: 'x.....|.=x.', data: ['credits']},
+      ],
+      {},
+      {overlayOnLane: 'wvld', wave: ['tl', { text: '4-bit One-Hot Signal', coords: [2.5625,2.25]}]},
+    ],
+    edge: [ 
+      'A-C', 'B-D', 'A<->B not specified', 'e-g', 'f-h', 'e<->f not specified',
+      '[rqvld-1:0]+5+[rqvld-1:2.0625] Back-to-Back Requests',
+      '[wvld-1:2.5625]->[wvld:2.5625,0][customRedEdge][customRedArrow]',
+    ],
+}
