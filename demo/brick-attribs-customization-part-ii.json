@@ -1,0 +1,16 @@
+{
+  
+  config: {fit2pane: true, hbounds: [0,30], customStyle: '.thickLines{stroke-width:2px;stroke-dasharray:1,4}', wrapSvgInImg: 0},
+  head: {tick:0},
+  signal: [
+    {},
+    {name: 'Plain',wave: 'h01l2pn=xzux345pnd',},
+    {name: 'overrideSkin',wave: 'h01l2pn=xzux345pnd', overrideSkin: 'lowkey'},    
+    {name: 'skinStyle',wave: 'h01l2pn=xzux345pnd', skinStyle: 'stroke:red'},
+    {name: 'skinClass',wave: 'h01l2pn=xzux345pnd', skinClass: 'thickLines'},
+    {name: 'overrideSkin + skinStyle',wave: 'h01l2pn=xzux345pnd', overrideSkin: 'lowkey', skinStyle: 'stroke:green'},    
+    {name: 'overrideSkin + skinStyle + skinClass',wave: 'h01l2pn=xzux345pnd', 
+     overrideSkin: 'professional_srf', skinStyle: 'stroke:green',skinClass: 'thickLines'},    
+    {},    
+  
+]}

@@ -1,0 +1,29 @@
+{  
+  config: {fit2pane: true, hbounds: [0,30], 
+           customStyle: '.dashedBlue{fill:none;stroke:blue;stroke-dasharray:6}' + '.dash2{stroke-dasharray:2}',},
+  head: {tick:0, text: 'Demonstration of <i>overrideSkin</i>, <i>skinClass</i>, and <i>skinStyle</i>'},
+  signal: [
+    {},
+    {name: 'nclk10',    wave: '1010101', overrideSkin: 'lowkey'},
+    {name: 'nclk11',    wave: '1010101', overrideSkin: 'lowkey', skinStyle: 'fill:none;stroke:black;stroke-dasharray:4'},
+    {name: 'pclk12',    wave: '0101010'},
+    {name: 'nclk13',    wave: '1010101', overrideSkin: 'default'},
+    {name: 'nclk14',    wave: '1010101', overrideSkin: 'default', skinStyle: 'fill:none;stroke:red;stroke-dasharray:5'},
+    {name: 'pclk15',  phase: -10.5, wave: '0101010', skinStyle: 'stroke-width:2px;'},
+    {name: 'nclk16',    wave: '1010<1010>'.repeat(3), },
+    {name: 'nclk17',    wave: '1010101', overrideSkin: 'default', skinClass: 'dashedBlue' },
+    {name: 'nclk18',    wave: '=.x.', overrideSkin: 'default', skinClass: 'dashedBlue', skinStyle: 'opacity:0.3'},
+    {name: 'nclk19',  phase: -10.5,    wave: '<==123456789duz>', skinStyle: 'stroke-width: 2.25px' },
+    {},
+    {wave: '=x=x=x=', phase: -7, overrideSkin: 'professional_srf', overlayOnLane: 4},
+    {wave: '<=x=>zux345pnd', phase: -7, overrideSkin: 'professional_srf', overlayOnLane: 1, skinStyle: 'stroke:cadetblue;' },
+    {wave: '<=x=>3z4u5xdpn', phase: -7, overrideSkin: 'professional_sharpz', overlayOnLane: 3, skinStyle: 'stroke:indigo;' },
+    {phase: -7,    wave: '<101010>'.repeat(2) + '=', overrideSkin: 'default', overlayOnLane: 2, skinClass: 'dashedBlue dash2', overlayOnLane: 2}, // dash2 overrides dashedBlue stroke-dasharray spec
+    {phase: -14,    wave: '<=010>'.repeat(2), overrideSkin: 'professional_srf', skinStyle: 'fill:none;stroke:tan;stroke-dasharray:2',overlayOnLane: 2},
+    {wave: '<=x=>zux345pnd', phase: -7, overrideSkin: 'professional_srf', overlayOnLane: 5, skinStyle: 'stroke:slategray;' },
+    {wave: '<=x=>3z4u5xdpn', phase: -7, overrideSkin: 'professional_sharpz', overlayOnLane: 9, skinStyle: 'stroke:paleturquoise;' },
+    {wave: '<=x=>pP0nN01x|', phase: 0, overrideSkin: 'professional_srf', overlayOnLane: 6, skinStyle: 'stroke:wheat;stroke-width: 0.75px' },
+    {wave: '<=x=>3z4u5xzud', phase: 0, overrideSkin: 'professional_sharpz', overlayOnLane: 10, skinStyle: 'stroke:firebrick;' },
+    {wave: '<=x=>3z4u5xdpn', phase: -7, overrideSkin: 'professional_sharpz', overlayOnLane: 8, skinStyle: 'stroke:paleturquoise;stroke-width:2.5px;stroke-dasharray:2' },
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  config:{ skin: 'professional', fit2pane: true, customStyle: '.myLaneShadow{stroke-width:22px;stroke:black;opacity:0.05}' },
+  head: {tick:0, text: ['tspan',{'font-size':'24px'},'Demonstrating the Usefulness of ',['tspan',{'font-style':'italic'},'overlayOnLane']]},
+ signal: [
+   {},
+   {name:'multi-freq-clk', wave: '010<1>', period: 3},
+   {},
+   {name: 'CLK2',    wave: '<0><1|>010101010<1>', id: 'clk2'},
+   {},    
+   {name: 'ddr-clk', wave: 'P'+'.'.repeat(24), id:'pedge'}, 
+   {            }, 
+   {name: 'UART / Single-bit Data', 'wave': '104.......1u', 'data': ['data'], id: 'uart_sb'},
+   {},
+   {name: 'clock', wave: 'p.' . repeat(10), id: 'sh_clk'}, 
+    {}, 
+   {name: 'reset', wave: '0' + '.' . repeat(19), id: 'sh_reset'}, 
+    {}, 
+   {name: 'test_got', wave: '1' + '.' . repeat(19), id: 'sh_tgot'}, 
+    {}, 
+   {name: 'prng_value[7:0]', wave: '=' . repeat(20), id: 'sh_pv'}, 
+    {}, 
+   {name: 'prng_value_col[7:0]', wave: '=' . repeat(20), data: [...Array(20).keys()], id: 'sh_pvc'}, 
+    {}, 
+    {overlayOnLane: 'sh_clk', wave: [ 'pw', {d: 'M 0 0.5 20 0.5', class: 'myLaneShadow'} ]}, 
+    {overlayOnLane: 'sh_reset', wave: [ 'pw', {d: 'M 0 0.5 20 0.5', class: 'myLaneShadow'} ]}, 
+    {overlayOnLane: 'sh_tgot', wave: [ 'pw', {d: 'M 0 0.5 20 0.5', class: 'myLaneShadow'} ]}, 
+    {overlayOnLane: 'sh_pv', wave: [ 'pw', {d: 'M 0 0.5 20 0.5', class: 'myLaneShadow'} ]}, 
+    {overlayOnLane: 'sh_pvc', wave: [ 'pw', {d: 'M 0 0.5 3.125 0.5', pwStyle: 'stroke-width:22px;stroke:#00f;opacity:0.1'} ]}, 
+    {overlayOnLane: 'sh_pvc', wave: [ 'pw', {d: 'M 3.125 0.5 8.125 0.5', pwStyle: 'stroke-width:22px;stroke:#0f0;opacity:0.1'} ]}, 
+    {overlayOnLane: 'sh_pvc', wave: [ 'pw', {d: 'M 8.125 0.5 20 0.5', pwStyle: 'stroke-width:22px;stroke:#f00;opacity:0.1'} ]}, 
+
+   {overlayOnLane: 'pedge', phase: 0.15, node: ' c d  '}, 
+   {overlayOnLane: 'pedge-1', phase: 0.15, node: ' a b  '}, 
+
+   {overlayOnLane:'clk2', wave: ['tl', {coords:[1.5,0.5],text:'TxtOnTopOfGap',tlStyle:'font-size:10'}]},
+   {overlayOnLane: 'pedge', wave: 'N'+'.'.repeat(24), phase: 0.5},
+   {overlayOnLane: 1, wave: '101<0.>', phase: -9.5, period:2},
+   {overlayOnLane: 1, wave: '0101<0>', phase: -16.5, period:1},
+   {overlayOnLane: 1, wave: '0101010<1>', phase: -21, period:0.5},
+    {overlayOnLane: 'uart_sb', wave: [
+      'tl', { coords: [1.65,.5], text: 'Start'},
+      'tl', { coords: [10.65,.5], text: 'ACK'},
+     ]},
+],
+   edge:
+   [
+ 'a-c', 'b-d', 'c-d',
+ ]}

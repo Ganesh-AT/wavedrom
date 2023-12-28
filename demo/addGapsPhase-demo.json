@@ -1,0 +1,36 @@
+{
+	config: { skin: 'professional', hscale: 1, marks: false, hbounds: [0,13],fit2pane:1},
+	head: {text: 'Demonstrating the <i>addGapsPhase</i> Feature'},
+	signal: [
+		{name: 'SSI0CLK 0',  wave: 'lhlhlh<l|>hlhlhl<h>'}, // Lane 0
+		{}, // Lane 1
+		{name: 'SSI0CLK 1',  wave: 'hlhlhl<h|>lhlhlh<l>'}, // Lane 2
+		{}, // Lane 3
+		{name: 'MOSI', 
+         
+         wave: '==.=.=.<=|>.=.=.=',
+		 phase: 0.2, addGapsPhase: 1.6,
+         
+         //wave: '==.=.=.<=|>.=.=.=',
+		 //phase: 0.2, 
+         
+					   data:[,'MSB',,,,,'LSB'],
+					   node: '.C...........E'}, // Lane 4
+		{phase: 0.2,   node: '.A...........B'}, // Lane 5
+		{name: 'MISO', wave: '==.=.=.<=|>.=.=.=',                           
+					   data:[,'MSB',,,,,'LSB'],
+					   phase: 0.2, addGapsPhase: 1.6,
+					   node: '.D...........F'}, // Lane 6
+		{}, // Lane 7
+		{name: 'SSI0EN0', wave: '10............<1>', phase: 1}, // Lane 8
+		{}, // Lane 9
+		{name: 'SSI_OE_N',   wave: '10............<1>', phase: 1}, // Lane 10
+	],
+	edge:[
+		'A<->B 4 - 16 bits',
+		'C-D','E-F'
+	],
+  //gaps: '. . . . . . . S'
+}
+
+

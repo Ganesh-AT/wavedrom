@@ -1,0 +1,41 @@
+{
+  head: {text: 'Data Labels Styling Flexibility'},
+  config: { skin: 'professional', hscale: 1, marks: true, fit2pane: 1,wrapSvgInImg:0,
+           customStyle: '.data_label{fill:blue}' + 
+             '.mySplData{stroke:darksalmon;stroke-dasharray:1;fill:none;font-size:16px}'
+          },
+  signal: [
+    {},
+    {name: 'CLK', wave: '01'.repeat(3)},
+    {},
+    {name: ['tspan',{dy:-7.5},'data_label',['tspan',{dy:15,x:-10},'+ nullification in one entry']],     
+     wave: '=' + '<.=>.'.repeat(2) + '<.=>',
+     data:['RXD1','RXD2',
+           ['tspan',{'fill':'black'},'RXD3']
+          ], 
+    },{},
+    {name: ['tspan',{dy:-7.5},'dlStyle + data_label',['tspan',{dy:15,x:-10},'+ nullification in one entry']],     
+     wave: '=' + '<.=>.'.repeat(2) + '<.=>',
+     data:['RXD1',
+           ['tspan',{style: 'fill:black;font-size:11pt;fill-opacity:1;',},'RXD2'],
+           'RXD3'], 
+     dlStyle: 'font-size:12px;fill-opacity:0.5' 
+    },{},    
+    {
+     name: ['tspan',{dy:-7.5},'dlStyle + nullify data_label',['tspan',{dy:15,x:-10},'+ nullification in one entry']],      
+     wave: '=' + '<.=>.'.repeat(2) + '<.=>',
+     data:[
+       ['tspan',{style: 'fill:black;font-size:11pt;fill-opacity:1;',},'RXD1'],
+       'RXD2','RXD3'], 
+     dlStyle: 'font-size:12px;fill-opacity:0.5;fill:black' 
+    },{},
+    {name: ['tspan',{dy:-7.5},'dlClass (overrides default data_label)',['tspan',{dy:15,x:-10},'+ nullification in one entry']], 
+     wave: '=' + '<.=>.'.repeat(2) + '<.=>',
+     data:['RXD1',
+           ['tspan',{style: 'stroke:none;fill:black;font-size:11pt;fill-opacity:1;',},'RXD2'],
+           'RXD3'], 
+     dlClass: 'mySplData'
+    },
+    {},
+  ],
+}
