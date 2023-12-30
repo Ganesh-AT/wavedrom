@@ -22,9 +22,9 @@
       - [Multiple Piecewise Linear (PWL) Components and Text Labels in a Lane](#multiple-piecewise-linear-pwl-components-and-text-labels-in-a-lane)
       - [Fine-Tuning PWL Renders with *pwClass* and *pwStyle*](#fine-tuning-pwl-renders-with-pwclass-and-pwstyle)
     - [Revisiting the *edge* Architecture](#revisiting-the-edge-architecture)
+      - [Enforcing Horizontal Arcs with Flexible Label Positioning](#enforcing-horizontal-arcs-with-flexible-label-positioning)
       - [Full *tspan* Support for Edge Labels](#full-tspan-support-for-edge-labels)
-      - [Coordinates Scheme for Node Locations](#coordinates-scheme-for-node-locations)
-      - [Tweaking Arc and Arrow Renders](#tweaking-arc-and-arrow-renders)
+      - [Timing Diagram Coordinates Scheme for Node Locations](#timing-diagram-coordinates-scheme-for-node-locations)
       - [Re-factored Edge Shape Implementation](#re-factored-edge-shape-implementation)
     - [Miscellaneus Features](#miscellaneus-features)
       - [Pre-Export SVG Optimization](#pre-export-svg-optimization)
@@ -398,7 +398,7 @@ others.
 The table below summarizes the different ways to fine-tune the
 appearance of various elements.
 
-<table width=100%>
+<table width=100% id="customStyleTbl">
     <tr>
         <td width = "17.5%" align="center" valign="middle"><b>Element</b></td>
         <td width = "27.5%" align="center" valign="middle"><b>Waveform-Wide Customization</b></td>
@@ -780,27 +780,112 @@ using the *avoidBBox* boolean attribute.
 
 #### Multiple Piecewise Linear (PWL) Components and Text Labels in a Lane
 
-bla bla TODO bla bla
+The grammar specification for the piece-wise linear waveforms in WaveDrom 3.3.0 only allows one *pw* object per lane.
+WaveDrom 24.01 adds support for specifying text labels in a similar manner (as described in the previous section).
+In many cases, it becomes necessary to support multiple text labels in a single lane (such as the *UART Example* lane in the previous section's example).
+
+WaveDrom 24.01 extends the *pw* functionality by allowing multiple *pw* and *tl* specifications in a single *wave* array.
+These specifications are expected to come in pairs, with the '*pw*' string followed by its companion object, and similarly for the '*tl*' string.
+Multiple '*pw*' specifications are generally not needed in a lane, as the path entry using the *d* attribute of its companion object can use the *M* command to move the 'drawing pen' to a fresh location without rendering a visible line.
+However, each companion object can come with its own class and style specifications.
+This provides end users with flexibility in tuning the appearance of the signal lane's components without having to resort to the *overlayOnLane* feature.
 
 #### Fine-Tuning PWL Renders with *pwClass* and *pwStyle*
 
-bla bla TODO bla bla
+The [*customStyle* section](#tuning-rendering-results-with-customstyle) includes a [table](#customStyleTbl) outlining the methods to configure the rendering of different elements in a waveform.
+The piece-wise linear paths are also present in the table. By default, these paths are rendered as black lines with a stroke width of 1px. 
+While it is not possible to configure a full override for that default style across all PWL elements in one shot, it is possible to utilize the same class in the *pwClass* attribute for multiple *pw* specifications.
+Per-element overrides / additional styling effects are available through the *pwStyle* attribute.
+
+![](demo/pwStyle-pwClass-demo.svg)
+
+The SVG above (generated from this [WaveJSON](demo/pwStyle-pwClass-demo.json)) provides examples of scenarios where these features are useful.
+The wave patterns at the top and bottom are purely for demonstrative purposes.
+However, the other elements in the waveform represent real-world use-cases.
+
+The V<sub>OH</sub> and V<sub>OL</sub> threshold lines on the *dat* signal (references the *id* attribute in the primary signal lane) are rendered using a single *pw* specification.
+It picks up its styling from the *vLineClass* specified in the *customStyle* config attribute.
+The same class is used for the rendering of the V<sub>t</sub> line on the *clk* signal, but the stroke color gets replaced by green in the *pwStyle* attribute.
+Another use-case rendered in the above example is the coloring of a region of interest in a different manner. The primary *clk* signal attempts to portray the duty cycle distortion region with red signal lines using a combination of *skinStyle* and *overlayOnLane* specifications.
+However, the red lines extend beyond the actual distortion region despite the use of sub-cycles.
+The *pwclk* signal lane (named PPW\_SD\_CLK\_OUT) uses the *pw* feature with a *pwStyle* attribute to render the signal lines in the region.
+For added measure, a gray shade is also applied to the region of interest - again with the help of a new *pw* segment with its own *pwStyle*.
+
+Readers interested in hands-on exploration of the above features can peruse this [ObsevableHQ link](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-pwclass-pwstyle).
 
 ### Revisiting the *edge* Architecture
+
+The *edge* feature in WaveDrom has steadily been gaining functionality over the years.
+The documentation of the feature (in Step 8 of the [online tutorial](https://wavedrom.com/tutorial.html)) is arguably in better shape than the actual implementation in WaveDrom 3.3.0.
+Different arc shapes seem to have been added to the code base in a piece-meal manner, resulting in a cyclomatic complexity of 40 (where *eslint* considers 20 as the ideal limit).
+
+WaveDrom 24.01 re-architects the edge / arrows feature and its implementation in the process of incorporating support for some new features. These include:
+1. New edge specifiers to enforce horizontal arcs with flexible label positioning
+2. Addition of *tspan* support for edge labels
+3. New timing diagram coordinates scheme (in addition to the existing node labels) for the specifying the end points of arcs.
+4. Refactored implementation of arc / arc shape renders to reduce cyclomatic complexity (invisible to end users)
+
+A detailed demonstration of the above aspects is provided in the subsections below.
+
+#### Enforcing Horizontal Arcs with Flexible Label Positioning
+
+We have found that the vast majority of annotations in timing diagrams for professional documents involve a pictorial representation of different timing parameters.
+In order to enforce a clean and consistent look, it is strongly suggested to enforce horizontal arcs for this purpose.
+WaveDrom 3.3.0 supports horizontal arcs, but requires some heavy lifting on the WaveJSON side:
+* Extra node labels are required to bring the two edges to the same horizontal plane. Users may end up using all available English upper case letters and may have to resort to upper-case Unicode ones. This also adds verbosity to the *edge* array.
+* Label lengths may cause the text to overlay the arrows, or in some cases, even the entire horizontal arc. Users may have to forego the edge label and incorporate round-about ways (such as utilizing *tspan* support for signal names) to place the intended text in an appropriate location.
+
+WaveDrom 24.01 introduces new edge shapes (the string between the node labels or timing diagram coordinates) to address these shortcomings. 
+The new shape strings have a length of either two or three. 
+The middle character is a number between 0 and 8 to denote the label position.
+
+```javascript
+regpat = new RegExp(/(<|>|\+)[0-8](>|<|\+)/)
+```
+
+There are a few restrictions in addition to the above pattern matching. 
+If a '+' is involved, it must be the frst and last character in the shape string.
+If either '&gt;' or '&lt;' is involved, both of them must appear int he shape string, and the first and last characters can't be the same. 
+The '><' pattern generates inward-pointing arrows, while the '<>' pattern generates a regular horizontal line with arrows at either end.
+The primary difference between '<>' and the legacy '<->' lies in the automatic generation of a vertical line from the node on the right to generate the arc in the same horizontal plane.
+
+The use of the '<>' edge shape pattern is brought out in this [WaveJSON](demo/horiz-arcs-w-lab-pos-part-1.json), and its rendering is reproduced below.
+
+![](demo/horiz-arcs-w-lab-pos-part-1.svg)
+
+The vertical lines from the node labels on the *data* signal are not explicitly specified.
+This cuts down the number of nodes that need to be specified in the *node* string for each edge from four to three.
+Nine distinct label positions are supported, with the default setting of 0 (right at the midpoint of the two nodes).
+Different positions may be adopted based on the label length and rendering of other arcs in the diagram.
+In the case of all label positions being unsatisfactory, end users can always use the *tl* feature to render the label at a position of their choosing.
+
+Readers wishing to experiment with different labels or node locations can take advantage of this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-horizontal-arcs-with-edge-specifier-lt-08-gt) for the above SVG.
+
+The use of the '><' edge shape pattern is brought out in this [WaveJSON](demo/horiz-arcs-w-lab-pos-part-2.json), and its rendering is reproduced below.
+
+![](demo/horiz-arcs-w-lab-pos-part-2.svg)
+
+Similar to the previous example, the vertical lines from the node labels on the *data* signal are not explicitly specified.
+Readers wishing to experiment with different labels or node locations can peruse this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-horizontal-arcs-with-edge-specifier-gt-08-lt) for the above SVG.
+
+Horizontal arcs with flexible label positioning are also available for use with the 'tee' specifier, as shown in the rendering of this [WaveJSON](demo/horiz-arcs-w-lab-pos-part-3.json) below.
+
+![](demo/horiz-arcs-w-lab-pos-part-3.svg)
+
+Since the 'tee' shape incorporates short vertical lines at either end, creating additional vertical lines from the nodes on a different horizontal plane is not suggested. The WaveJSON for the above SVG also avoids that (the node labels on the *clk* signal are unused).
+The parsing of the double tee specification ('++') by the WaveDrom engine does not explicitly result in a vertical from the node on the right, even though the destination node to place the end point is automatically computed.
+Readers can perform further experimentation on this feature using this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-horizontal-arcs-with-edge-specifier-pl-08-pl).
+
 
 #### Full *tspan* Support for Edge Labels
 
 bla bla TODO bla bla
 
-#### Coordinates Scheme for Node Locations
+#### Timing Diagram Coordinates Scheme for Node Locations
 
 bla bla TODO bla bla
 
 supports mathematical expressions
-
-#### Tweaking Arc and Arrow Renders
-
-bla bla TODO bla bla
 
 #### Re-factored Edge Shape Implementation
 

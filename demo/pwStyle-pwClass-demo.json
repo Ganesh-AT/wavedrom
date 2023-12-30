@@ -1,0 +1,74 @@
+{
+  head: {text: 'Demonstration of pwStyle, pwClass, tlStyle, & tlClass'},
+  config: { skin: 'professional', wrapSvgInImg: 0, marks: true, hbounds: [1,30], 
+           customStyle: '.vAnnoClass{font-size:7px;text-align:center;opacity:1}' +
+             '.vLineClass{stroke:#0000ff;stroke-width:0.5px;stroke-opacity:1;stroke-dasharray:2}',
+           fit2pane: true },
+  signal: [
+    wd_.parseTrig({name: "", id: 'cos', wave: ['cos', {repeat: 16, pwClass: 'vLineClass', }]}),
+    {                     node: '...\xc3....\xc4....\xc5' },
+    {                     node: '.......<.\xc6>\xc7\xc8' },
+    { name: 'SD_CLK_OUT', wave: '0..1...', 
+                          node: '...\xcc...<.\xc0\xc1>\xc2>.<.>..\xcd', id: 'clk' },
+    {                     node: '...E..G\xc9<\xca\xcb>' },
+    {                     node: '.K.L.M........' },
+    { name: 'Host DAT Output', wave: 'x=...x=...x=...x', 
+                               node: '...R.ST...UV...', id: 'dat',
+                               dlStyle: 'opacity:0.3', data: Array(3).fill('VALID WINDOW') }, // 
+    {},
+    {                     node: '...\xd3....\xd4....\xd5' },
+    {                     node: '.......<.\xd6>\xcf\xd8' },
+    { name: 'PPW_SD_CLK_OUT', wave: '0..1...<.>', id: 'pwclk', },
+    {                         node: '...H..I\xd9<\xda\xdb>' },
+    {},
+    wd_.parseTrig({name: "", id: 'sin', wave: ['sin', {repeat: 16, pwClass: 'vLineClass'}]}),
+    // Start overlays
+    { overlayOnLane: 'clk', wave: '<1>0', phase: -7,   skinStyle: 'stroke:red'},
+    { overlayOnLane: 'clk', wave: '<1>0', phase: -7.5, skinStyle: 'stroke:red'},
+    { overlayOnLane: 'clk', wave: '<10>', phase: -8,   skinStyle: 'stroke:red'},
+    { overlayOnLane: 'clk', phase: -9, wave: '0...1..'},
+    { overlayOnLane: 'pwclk', node: '...\xdc...<.\xd0\xd1>\xd2>.<.>..\xdd', },
+    { overlayOnLane: 'pwclk', phase: -9, wave: '0...1..'},      
+    { overlayOnLane: 'pwclk', 
+      wave:[ 'pw', { d: 'M 7.575 1 8.575 1 8.725 0 7.725 0 Z', pwStyle: 'stroke:red' },
+             'pw', { d: 'M 8.075 1 8.225 0', pwStyle: 'stroke:red'},
+             'pw', { d: 'M 7.5 1 7.575 1 M 8.75 0 9 0', }
+           ] 
+    },
+    { overlayOnLane: 'pwclk', 
+      wave:[ 'pw', { d: 'M 7.575 1.5 v -2 L 8.75 -0.5 v 2 z', 
+                     pwStyle: 'stroke: none; fill:gray; fill-opacity:0.2'
+                   } ],    
+    },
+    { wave: ['pw', { 
+                     d: ['m',0,0.5, 'L',4,0.5, 'M',7,0.5, 'L',10,0.5, 'M',13,0.5, 'L',16,0.5,], 
+                     pwClass: 'vLineClass', pwStyle: 'stroke:green' 
+                   } ],
+      overlayOnLane: 'clk' 
+    },
+    { wave: ['tl', { coords: [16,0.5], text: 'V<sub>t</sub>', tlClass: 'vAnnoClass' } ],
+      overlayOnLane: 'clk' 
+    },
+    { wave: ['tl', { coords: [16,1], text: 'V<sub>OH</sub>', tlClass: 'vAnnoClass', tlStyle: 'opacity:0;' } ], // Create empty white box to line up end point of signals
+      overlayOnLane: 'clk'},
+    { wave: ['tl', { coords: [16,1], text: 'V<sub>OH</sub>', tlClass: 'vAnnoClass', tlStyle: 'opacity:0;' } ], // Create empty white box to line up end point of signals
+      overlayOnLane: 'pwclk'},
+    wd_.parseTrig({overlayOnLane: 'sin', phase: -3, wave: ['sin', {repeat: 11, phi: 180, pwClass: 'vLineClass', pwStyle: 'stroke:red;stroke-width:1.5px'}]}),
+    wd_.parseTrig({overlayOnLane: 'cos', phase: -2.25, wave: ['cos', {repeat: 12, phi:270, pwClass: 'vLineClass', pwStyle: 'stroke:brown;stroke-width:1.5px'}]}),
+    { wave: [ 'pw', { d: ['m',0,0.2, 'L',16,0.2,  'M',0,0.8, 'L',16,0.8], pwClass: 'vLineClass',  } ],
+      overlayOnLane: 'dat' },
+    { wave: ['tl', { coords: [16,0.25], text: 'V<sub>OL</sub>', tlClass: 'vAnnoClass', } ], overlayOnLane: 'dat' },
+    { wave: ['tl', { coords: [16,0.79], text: 'V<sub>OH</sub>', tlClass: 'vAnnoClass', } ], overlayOnLane: 'dat' },
+  ],
+  edge:[
+    '\xc3<->\xc5 t<sub>PERIOD</sub>', '\xc6-\xc0', '\xc7-\xca', '\xc2-\xcb',
+    '\xcc<->\xc0 t<sub>CKMPW</sub>', '\xc2<->\xcd t<sub>CKMPW</sub>',
+    '\xc6>1<\xc7 t<sub>CKDCD</sub>', '\xca>5<\xcb t<sub>CKDCD</sub>',
+    'L-\xc3','\xc5-\xcd', 'A<->B t<sub>CKMPW</sub>', 'B<->C t<sub>CKMPW</sub>',
+    'E<->G t<sub>ODLY</sub>', 'L<->M t<sub>OHLD</sub>', 'G-T', 'M-S', 'X-L', 'Z-C',
+    '\xd3<->\xd5 t<sub>PERIOD</sub>', '\xd6-\xd0', '\xcf-\xda', '\xd2-\xdb',
+    '\xdc<->\xd0 t<sub>CKMPW</sub>', '\xd2<->\xdd t<sub>CKMPW</sub>',
+    '\xd6>1<\xcf t<sub>CKDCD</sub>', '\xda>5<\xdb t<sub>CKDCD</sub>',
+    '\xd5-\xdd','\xd3-\xdc'
+  ]
+}
