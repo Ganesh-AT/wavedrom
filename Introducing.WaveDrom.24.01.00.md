@@ -24,6 +24,7 @@
     - [Revisiting the *edge* Architecture](#revisiting-the-edge-architecture)
       - [Enforcing Horizontal Arcs with Flexible Label Positioning](#enforcing-horizontal-arcs-with-flexible-label-positioning)
       - [Full *tspan* Support for Edge Labels](#full-tspan-support-for-edge-labels)
+      - [Custom Styling for Arcs / Edges](#custom-styling-for-arcs--edges)
       - [Timing Diagram Coordinates Scheme for Node Locations](#timing-diagram-coordinates-scheme-for-node-locations)
       - [Re-factored Edge Shape Implementation](#re-factored-edge-shape-implementation)
     - [Miscellaneus Features](#miscellaneus-features)
@@ -822,8 +823,9 @@ Different arc shapes seem to have been added to the code base in a piece-meal ma
 WaveDrom 24.01 re-architects the edge / arrows feature and its implementation in the process of incorporating support for some new features. These include:
 1. New edge specifiers to enforce horizontal arcs with flexible label positioning
 2. Addition of *tspan* support for edge labels
-3. New timing diagram coordinates scheme (in addition to the existing node labels) for the specifying the end points of arcs.
-4. Refactored implementation of arc / arc shape renders to reduce cyclomatic complexity (invisible to end users)
+3. Custom styling support for arcs / edges
+4. New timing diagram coordinates scheme (in addition to the existing node labels) for the specifying the end points of arcs.
+5. Refactored implementation of arc / arc shape renders to reduce cyclomatic complexity (invisible to end users)
 
 A detailed demonstration of the above aspects is provided in the subsections below.
 
@@ -868,7 +870,7 @@ The use of the '><' edge shape pattern is brought out in this [WaveJSON](demo/ho
 Similar to the previous example, the vertical lines from the node labels on the *data* signal are not explicitly specified.
 Readers wishing to experiment with different labels or node locations can peruse this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-horizontal-arcs-with-edge-specifier-gt-08-lt) for the above SVG.
 
-Horizontal arcs with flexible label positioning are also available for use with the 'tee' specifier, as shown in the rendering of this [WaveJSON](demo/horiz-arcs-w-lab-pos-part-3.json) below.
+Horizontal arcs with flexible label positioning are also available for the 'tee' specifier, as shown in the rendering of this [WaveJSON](demo/horiz-arcs-w-lab-pos-part-3.json) below.
 
 ![](demo/horiz-arcs-w-lab-pos-part-3.svg)
 
@@ -879,10 +881,114 @@ Readers can perform further experimentation on this feature using this [Observab
 
 #### Full *tspan* Support for Edge Labels
 
-bla bla TODO bla bla
+One of the key goals with WaveDrom 24.01 is to provide the end user with as much flexibility as possible.
+This led to the inclusion of the [*customStyle*](#tuning-rendering-results-with-customstyle) feature.
+The [table](#customStyleTbl) in that section outlines the methods to configure the rendering of different elements in a waveform.
+The edge / arc labels can be customized using the *arc_label* class specification in the *customStyle* string. An example is also available in that section.
+
+In this particular subsection, the focus is on per-label customization.
+This is achieved using the *tspan* feature.
+In general, *tspan* specifications for different text elements are easy to draw up in the WaveJSON.
+Incorporating them inside edge strings is a challenge from both specification and parsing viewpoint.
+The *tspan* components need to be all enclosed within a different quote type compared to the ones used for specifying the edge array members.
+This includes different properties and their values, as well as the 'tspan' and actual string.
+
+![](demo/tspan-in-edge-labels.svg)
+
+The [WaveJSON](demo/tspan-in-edge-labels.json) used to generate the above SVG can also be subject to further experimentation in this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-customizing-arcs).
+
+The WaveJSON includes two examples of *tspan* usage in edge labels. The first one is a simple replacement for a normal string with just the font style and size configured differently. The second one changes the color and font size, and also incorporates subscripts - making it necessary to use nested tspans in a single entry.
+
+
+#### Custom Styling for Arcs / Edges
+
+The [WaveJSON](demo/custom-edge-shape-styling.json) used to generate the SVG below can also be subject to further experimentation in the same [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-customizing-arcs) link specified in the previous subsection.
+
+![](demo/custom-edge-shape-styling.svg)
+
+Custom styling support is available only if the node labels specifying the end points are enclosed in square brackets, or, the new timing diagram coordinates scheme is used for that purpose.
+In either case, the second point is followed by either one or two strings within square brackets themselves.
+The first string specifies the class in the *customStyle* configuration that needs to be applied to the arc path.
+The second string specifies the one that needs to be applied to the start and end arrow markers.
+Note that this string doesn't yet apply to the tee markers, and will be addressed in a future release.
+It is possible to only apply a different style to the arrows alone by leaving the first square brackets set empty.
+
+Additional examples of these features are also available in the [*customStyle*](#tuning-rendering-results-with-customstyle) section.
 
 #### Timing Diagram Coordinates Scheme for Node Locations
 
+WaveDrom supports the use of single-character node labels in the *node* attribute to indicate transition points in the signals.
+These can be re-used in the *edge* strings to denote the start and/or end points of arcs / edges.
+The naming scheme offers a number of advantages over other approaches:
+* End users don't have to consider them when adding signal lanes or spacers, as the node locations move along with the changes in the *signal* array
+* The *wave* and *node* strings have a 1-1 correspondence. They can be kept in sync one below the other to provide quick feedback on the transition being referenced by the node label.
+  
+The scheme works very well for small and simple diagrams. In more complex scenarios, there are a few drawbacks:
+* Transition points are correctly labeled only for a limited set of bricks such as those signifying a 0-1 or 1-0 transition, or between two multi-bit data bricks.
+* It may be cumbersome to deal with signal lanes having a large number of transitions that need to be referenced, or having the transition of interest late in the *wave* string.
+* Users may have to resort to Unicode characters to represent nodes in case of diagrams with more than 26 labels. In case of processing using a regular keyboard, these are multi-character codes starting with \u or \x. This results in messing up of the character-wise sync between the *wave* and *node* strings. The simplicity of single-character labeling is also lost.
+* The labeling is locked to a 50% threshold level and a fixed horizontal position in the brick for the transition point. This makes it inflexible to support configurable threshold levels or custom skins with rise and fall times varying from the default.
+
+WaveDrom 24.01 incorporates an additional scheme to specify invisible node labels purely from an arc endpoint perspective.
+Before delving into the grammar for the new scheme, it is useful to recount the legacy specifications. The first step is to split the *edge* string member into two parts:
+
+```javascript
+arcspec_label = new RegExp(/^([^\s]+)\s?([\s\S]*)$/)
+```
+
+This pattern represents the arc endpoints and shape as the first match, and the label as the second. These are separated by a 'space' character. Only the arc endpoints / shape is mandatory, and that specification should not have any 'space' characters in it.
+
+```javascript
+arcspec_label_eg = 'a-H test string<sub>subscript</sub>';
+arscpec_label_components = arcspec_label_eg.match(arcspec_label);
+arcspec_label_components[1]; // Returns the arc spec 'a-H'
+arcspec_label_components[2]; // Returns the edge / arc label 'test string<sub>subscript</sub>'
+```
+
+The arc endpoints are represented by single characters, while the allowed shape specifications follow the pattern below:
+
+```javascript
+edgeshape = new RegExp(/(~|-|-~|~-|-\||\|-|-\|-|->|~>|-~>|~->|-\|>|\|->|-\|->|<->|<~>|<-~>|<-\|>|<-\|->|\+)/)
+```
+
+The pattern specified above is exactly as per the implementation in WaveDrom 3.3.0. As we shall see in a later subsection, it ended up getting simplified during the refactoring exercise. Based on this *edgeshape* pattern, the *arcspec* pattern can be specified as:
+
+```javascript
+arcspec = new RegExp('(\\S)' + edgeshape.source + '(?=\\S)(\\S)$')
+```
+
+The first and third captured matches represent the endpoints / characters specified in the *node* string of the signal lanes. 
+One of the constraints is that these characters must be either lower- or upper-case ones (Unicode included).
+
+```javascript
+arcspeceg = 'a-H';
+arccomponents = arcspeceg.match(arcspec);
+nl_from = arccomponents[1]; // node label of starting point
+nl_to = arccomponents[3]; // node label of ending point
+(nl_from.toLowerCase() != nl_from.toUpperCase()); // Should return true
+(nl_to.toLowerCase() != nl_to.toUpperCase()); // Should return true
+```
+
+Lower-case letters are visible as node labels in the signal lane, while upper-case ones are invisible. Examples of the legacy scheme for node specification are available in the SVGs below.
+
+<table width="100%">
+<tr>
+<td width="50%">
+<img src="demo/legacy-invisible-node-labels.svg" />
+</td>
+<td width="50%">
+<img src="demo/legacy-visible-node-labels.svg" />
+</td>
+</table>
+
+
+An [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-node-labeling-schemes) with the [WaveJSON](demo/legacy-invisible-node-labels.json) [files](demo/legacy-invisible-node-labels.json) for the above renders is also available for hands-on experiementation. 
+
+bla bla SVG of different arc shapes TODO bla bla
+
+
+
+More complex diagrams with a large number of reference transitions and/or 
 bla bla TODO bla bla
 
 supports mathematical expressions
@@ -975,6 +1081,8 @@ a temporary render area where each text element is rendered for
 determining the bounding box dimensions and then removed.
 
 #### Grouping of Text Elements for a Better *tspan* Experience
+
+bla bla TODO bla bla
 
 #### Fine-Tuning the *hbounds* Feature
 
