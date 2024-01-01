@@ -1,0 +1,30 @@
+{
+  head:   { text: "Demonstration of Single-Character Invisible Node Labels",},
+  config: { skin: 'professional', hscale: 1, marks: false, hbounds: [0,12], fit2pane: true},
+     signal: [
+    {              node: '.A<.B>..<.C>....D<.E>'},    
+    {name: 'EN',   wave: '10....<|>.....1.'},    
+    {              node: '....<.>....<.>..<..>'},
+    {name: 'SCK',  wave: '1.<.0>.<1>.<0|.><1>.<0>.1.<.>.',
+                   node: '....<F>.<J>..<.G>.K'},    
+    {              node: '..<.Q>.<.>T<.>.<.X><.>R<.>..'},    
+    {name: 'MOSI', wave: 'z<.=>..<.=..|.><.=>...<.>z.',      
+                   node: '....<.N....><.P><...>...'},    
+    {              node: '.<HY><....><IZ.>..<..><...>.<.SL>'},    
+    {name: 'MISO', wave: 'z<.=....><.=..|.><.=..>...z.',
+                   node: '.<.M>..<.O....><.U..>...V'},    
+    
+  ],
+  edge:[
+    'A-H','B-Q','C-J','D-K','E-S', 'L-V',
+    'F-I','G-R','T-N', 'X-P', 'Y-M', 'Z-O',
+    'B<->C T', 
+    'A<->B t<sub>ES</sub>',    
+    'D<->E t<sub>SE</sub>',    
+    'H><Y t<sub>ED</sub>',  
+    'I><Z t<sub>SD</sub>',
+    'S>7<L t<sub>EDZ</sub>',    
+    'R<->X t<sub>SET</sub>',    
+    'Q<->T t<sub>HOL</sub>'
+  ],    
+}

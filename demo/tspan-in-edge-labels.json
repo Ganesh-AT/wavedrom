@@ -1,0 +1,15 @@
+{
+  config: {skin:'professional', fit2pane: 1, customStyle: '.redArrow{fill:red}.redEdge{stroke:red}'},
+  head:{text:"<i>tspan</i> Support for Edge Labels"},
+  signal: [
+    {node: '.IJ.K.L', phase:0.37, },
+    {name: 'Example', wave: 'hl..h..', phase:0.21},
+    {},
+    {node: '.AB.C.D', phase: 0.36, overlayOnLane: 1}
+  ],
+  edge: [
+    'I+5+J t<sub>time', 
+    'K<1>L ["tspan",{"font-family":"monospace","font-size":"6px"},"Test"]',
+    '[A]<->[C][redEdge][redArrow] ["tspan",{"fill":"red","font-size":"12px"},"t",["tspan",{"baseline-shift": "sub","font-size":"0.7em"},"LOW"]]'
+  ], 
+}

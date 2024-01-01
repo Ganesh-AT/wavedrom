@@ -1,0 +1,19 @@
+{
+  config: {skin:'professional', fit2pane: 1, 
+           customStyle: '.dotBlue{stroke:blue;stroke-dasharray:2}.' +
+             'redArrow{fill:red;}.redEdge{stroke:red;stroke-dasharray:1}'},
+  head:{text:"Custom Styling for Arc Shapes and Arrows"},
+  signal: [
+    {node: '.IJ.K.L', phase:0.37, },
+    {name: 'Example', wave: 'hl..h..', phase:0.21},
+    {},
+    {node: '.AB.C.D', phase: 0.36, overlayOnLane: 1}
+  ],
+  edge: [
+    '[I]+5+[J][redEdge][redArrow] t<sub>time</sub>', 
+    'K<1>L Test',
+    '[K]~[C][redEdge]',
+    '[J]-~[C][dotBlue]',
+    '[A]<->[C][redEdge][redArrow] t<sub>LOW</sub>'
+  ], 
+}
