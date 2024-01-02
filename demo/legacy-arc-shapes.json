@@ -1,0 +1,49 @@
+{
+  head:   { text: "Demonstration of Different Arc Shapes in WaveDrom 3.3.0", },
+  config: { skin: 'default', hscale: 1, marks: false, hbounds: [0,14.5], fit2pane: true},
+  signal: [
+    {node: 'V............<.>.\xd5'},     
+    {name: 'CLK-NA', phase: 0.35,
+     wave: '0101010101010101',
+     node: '.a.bc..de..f..g'.toUpperCase() },
+    {},
+    {name: 'DATA-NA',
+     wave: '===============',
+     node: '..\xc0\xc1.\xc2..\xc3\xc4..\xc5\xc6'
+    },
+    {},
+    {node: 'W............<.>.\xd6'},     
+    {name: 'CLK-SA', phase: 0.35,
+     wave: '0101010101010101',
+     node: '.h.ij..kl..m..n'.toUpperCase() 
+    },
+    {},
+    {name: 'DATA-SA',
+     wave: '===============',
+     node: '..\xc7\xc8.\xc9..\xca\xcb..\xcc\xcd'//.toLowerCase()
+    },
+    {},
+    {node: 'X............<.>.\xd8'},
+    {name: 'CLK-DA', phase: 0.35,
+     wave: '0101010101010101',
+     node: '.o.pq..rs..t..u'.toUpperCase() 
+    },
+    {},
+    {name: 'DATA-DA',
+     wave: '===============',
+     node: '..\xce\xcf.\xd0..\xd1\xd2..\xd3\xd4'//.toLowerCase()
+    },
+    {},
+  ],
+  edge:[
+    'A~\xc0 tilde', 'B-\xc1 hyphen',  'C-~\xc2 hyphen-tilde', 'D~-\xc3 tilde-hyphen', 
+    'E-|\xc4 hyphen-pipe', 'F|-\xc5 pipe-hyphen', 'G-|-\xc6 hyphen-pipe-hyphen',
+    'H~>\xc7 T>', 'I->\xc8 H>', 'J-~>\xc9 HT>', 'K~->\xca TH>',
+    'L-|>\xcb HP>', 'M|->\xcc PH>', 'N-|->\xcd HPH>',
+    'O<~>\xce <T>', 'P<->\xcf <H>', 'Q<-~>\xd0 <HT>',
+    'R<~->\xd1 <TH>', 'S<-|>\xd2 <HP>', 'T<|->\xd3 <PH>', 'U<-|->\xd4 <HPH>',
+    'V+\xd5 No-Arrow Arcs',
+    'W+\xd6 Single-Arrow Arcs',
+    'X+\xd8 Dual-Arrow Arcs',    
+  ],    
+}
