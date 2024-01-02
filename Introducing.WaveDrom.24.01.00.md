@@ -948,7 +948,7 @@ arcspec_label_components[2]; // Returns the edge / arc label 'test string<sub>su
 The arc endpoints are represented by single characters, while the allowed shape specifications follow the pattern below:
 
 ```javascript
-edgeshape = new RegExp(/(~|-|-~|~-|-\||\|-|-\|-|->|~>|-~>|~->|-\|>|\|->|-\|->|<->|<~>|<-~>|<-\|>|<-\|->|\+)/)
+edgeshape = new RegExp(/(~|-|-~|~-|-\||\|-|-\|-|->|~>|-~>|~->|-\|>|\|->|-\|->|<->|<~>|<~->|<-~>|<-\|>|<-\|->|\+)/)
 ```
 
 The pattern specified above is exactly as per the implementation in WaveDrom 3.3.0. As we shall see in a later subsection, it ended up getting simplified during the refactoring exercise. Based on this *edgeshape* pattern, the *arcspec* pattern can be specified as:
@@ -958,7 +958,8 @@ arcspec = new RegExp('(\\S)' + edgeshape.source + '(?=\\S)(\\S)$')
 ```
 
 The first and third captured matches represent the endpoints / characters specified in the *node* string of the signal lanes. 
-One of the constraints is that these characters must be either lower- or upper-case ones (Unicode included).
+The intention in WaveDrom 3.3.0 is for lower-case letters to be visible as node labels in the signal lane, while upper-case ones are meant to be invisible. 
+In formal terms, the node labels must obey the constraint that they must be either lower- or upper-case ones (Unicode included).
 
 ```javascript
 arcspeceg = 'a-H';
@@ -969,14 +970,14 @@ nl_to = arccomponents[3]; // node label of ending point
 (nl_to.toLowerCase() != nl_to.toUpperCase()); // Should return true
 ```
 
-Lower-case letters are visible as node labels in the signal lane, while upper-case ones are invisible. Examples of the legacy scheme for node specification are available in the SVGs below.
+WaveDrom 3.3.0 doesn't actually check for the above constraints, and any characters that fail the test (such as, say, '*[*', '*]*', '*(*', '*)*', etc.) are treated as visible lower-case letters. Examples of the legacy scheme for node specification are available in the SVGs below.
 
 <table width="100%">
 <tr width="100%">
-<td>
+<td width="500" align="center"> <!-- Github-compatible Markdown for half page width -->
 <img src="demo/legacy-invisible-node-labels.svg" width="100%"/>
 </td>
-<td>
+<td width="500" align="center"> <!-- Github-compatible Markdown for half page width -->
 <img src="demo/legacy-visible-node-labels.svg" width="100%"/>
 </td>
 </table>
@@ -984,7 +985,17 @@ Lower-case letters are visible as node labels in the signal lane, while upper-ca
 
 An [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-node-labeling-schemes) with the [WaveJSON](demo/legacy-invisible-node-labels.json) [files](demo/legacy-invisible-node-labels.json) for the above renders is also available for hands-on experiementation. 
 
-bla bla SVG of different arc shapes TODO bla bla
+A demonstration of different legacy arc shapes (as deciphered using the ```edgeshape``` pattern above) is available in this [WaveJSON](demo/legacy-arc-shapes.json). 
+
+![](demo/legacy-arc-shapes.svg)
+
+Readers can experiment with both the ```default``` and ```professional``` in this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-refactoring-legacy-arc-shapes).
+
+
+WaveDrom 24.01 requires the constraint on the node labels being upper or lower-case letters to be followed strictly.
+In particular, the appearance of '*[*' as the first character in the edge string is meant to denote the use of the new timing diagram coordinates scheme for node positioning.
+
+bla bla details of new timing diagram coordinates scheme bla bla
 
 
 
