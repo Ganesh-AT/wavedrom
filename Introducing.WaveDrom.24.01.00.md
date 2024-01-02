@@ -22,10 +22,10 @@
       - [Multiple Piecewise Linear (PWL) Components and Text Labels in a Lane](#multiple-piecewise-linear-pwl-components-and-text-labels-in-a-lane)
       - [Fine-Tuning PWL Renders with *pwClass* and *pwStyle*](#fine-tuning-pwl-renders-with-pwclass-and-pwstyle)
     - [Revisiting the *edge* Architecture](#revisiting-the-edge-architecture)
+      - [Timing Diagram Coordinates Scheme for Node Locations](#timing-diagram-coordinates-scheme-for-node-locations)
       - [Enforcing Horizontal Arcs with Flexible Label Positioning](#enforcing-horizontal-arcs-with-flexible-label-positioning)
       - [Full *tspan* Support for Edge Labels](#full-tspan-support-for-edge-labels)
       - [Custom Styling for Arcs / Edges](#custom-styling-for-arcs--edges)
-      - [Timing Diagram Coordinates Scheme for Node Locations](#timing-diagram-coordinates-scheme-for-node-locations)
       - [Re-factored Edge Shape Implementation](#re-factored-edge-shape-implementation)
     - [Miscellaneus Features](#miscellaneus-features)
       - [Pre-Export SVG Optimization](#pre-export-svg-optimization)
@@ -821,13 +821,98 @@ The documentation of the feature (in Step 8 of the [online tutorial](https://wav
 Different arc shapes seem to have been added to the code base in a piece-meal manner, resulting in a cyclomatic complexity of 40 (where *eslint* considers 20 as the ideal limit).
 
 WaveDrom 24.01 re-architects the edge / arrows feature and its implementation in the process of incorporating support for some new features. These include:
-1. New edge specifiers to enforce horizontal arcs with flexible label positioning
-2. Addition of *tspan* support for edge labels
-3. Custom styling support for arcs / edges
-4. New timing diagram coordinates scheme (in addition to the existing node labels) for the specifying the end points of arcs.
+1. New timing diagram coordinates scheme (in addition to the existing node labels) for the specifying the end points of arcs.
+2. New edge specifiers to enforce horizontal arcs with flexible label positioning
+3. Addition of *tspan* support for edge labels
+4. Custom styling support for arcs / edges
 5. Refactored implementation of arc / arc shape renders to reduce cyclomatic complexity (invisible to end users)
 
-A detailed demonstration of the above aspects is provided in the subsections below.
+A detailed demonstration of the above aspects is provided in this section. In order to provide context to the discussion, a recount of the legacy specifications is helpful. The *edge* attribute is an array of strings, with each member representing an arc in the waveform. The WaveDrom 3.3.0 engine processes each string by splitting it into two parts.
+
+```javascript
+arcspec_label = new RegExp(/^([^\s]+)\s?([\s\S]*)$/)
+```
+
+This pattern represents the arc endpoints and shape as the first match, and the label as the second. These are separated by a 'space' character. Only the arc endpoints / shape is mandatory, and that specification should not have any 'space' characters in it.
+
+```javascript
+arcspec_label_eg = 'a-H test string<sub>subscript</sub>';
+arscpec_label_components = arcspec_label_eg.match(arcspec_label);
+arcspec_label_components[1]; // Returns the arc spec 'a-H'
+arcspec_label_components[2]; // Returns the edge / arc label 'test string<sub>subscript</sub>'
+```
+
+The arc endpoints are represented by single characters, while the allowed shape specifications follow the pattern below:
+
+```javascript
+edgeshape = new RegExp(/(~|-|-~|~-|-\||\|-|-\|-|->|~>|-~>|~->|-\|>|\|->|-\|->|<->|<~>|<~->|<-~>|<-\|>|<-\|->|\+)/)
+```
+
+The pattern specified above is exactly as per the implementation in WaveDrom 3.3.0. As we shall see in a later subsection, it ended up getting simplified during the refactoring exercise. Based on this *edgeshape* pattern, the *arcspec* pattern can be specified as:
+
+```javascript
+arcspec = new RegExp('(\\S)' + edgeshape.source + '(?=\\S)(\\S)$')
+```
+
+The first and third captured matches represent the endpoints / characters specified in the *node* string of the signal lanes. 
+The intention in WaveDrom 3.3.0 is for lower-case letters to be visible as node labels in the signal lane, while upper-case ones are meant to be invisible. 
+In formal terms, the node labels must obey the constraint that they must be either lower- or upper-case ones (Unicode included).
+
+```javascript
+arcspeceg = 'a-H';
+arccomponents = arcspeceg.match(arcspec);
+nl_from = arccomponents[1]; // node label of starting point
+nl_to = arccomponents[3]; // node label of ending point
+(nl_from.toLowerCase() != nl_from.toUpperCase()); // Should return true
+(nl_to.toLowerCase() != nl_to.toUpperCase()); // Should return true
+```
+
+WaveDrom 3.3.0 doesn't actually check for the above constraints, and any characters that fail the test (such as, say, '*[*', '*]*', '*(*', '*)*', etc.) are treated as visible lower-case letters. Examples of the legacy scheme for node specification are available in the SVGs below. The use of custom *tspan* markup in the edge / arc label (using the ```tspan``` *npm* package) is also demonstrated.
+
+<table width="100%">
+<tr width="100%">
+<td width="500" align="center"> <!-- Github-compatible Markdown for half page width -->
+<img src="demo/legacy-invisible-node-labels.svg" width="100%"/>
+</td>
+<td width="500" align="center"> <!-- Github-compatible Markdown for half page width -->
+<img src="demo/legacy-visible-node-labels.svg" width="100%"/>
+</td>
+</table>
+
+An [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-node-labeling-schemes) with the [WaveJSON](demo/legacy-invisible-node-labels.json) [files](demo/legacy-invisible-node-labels.json) for the above renders is also available for hands-on experiementation. 
+
+A demonstration of different legacy arc shapes (as deciphered using the ```edgeshape``` pattern above) is available in this [WaveJSON](demo/legacy-arc-shapes.json). 
+
+![](demo/legacy-arc-shapes.svg)
+
+Readers can experiment with both the ```default``` and ```professional``` skins in this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-refactoring-legacy-arc-shapes) for different arrow styles. It must be noted that the ```professional``` skin is only available in WaveDrom 24.01.
+
+#### Timing Diagram Coordinates Scheme for Node Locations
+
+WaveDrom supports the use of single-character node labels in the *node* attribute to indicate signal transition points.
+These are meant to be re-used in the *edge* strings to denote the start and/or end points of arcs / edges.
+The naming scheme offers a number of advantages over other approaches:
+* End users don't have to consider them when adding signal lanes or spacers, as the node locations move along with the changes in the *signal* array
+* The *wave* and *node* strings have a 1-1 correspondence. They can be kept in sync one below the other to provide quick feedback on the transition being referenced by the node label.
+  
+The scheme works very well for small and simple diagrams. In more complex scenarios, there are a few drawbacks:
+* Transition points are correctly labeled only for a limited set of bricks such as those signifying a 0-1 or 1-0 transition, or between two multi-bit data bricks.
+* It may be cumbersome to deal with signal lanes having a large number of transitions that need to be referenced, or having the transition of interest late in the *wave* string.
+* Users may have to resort to Unicode characters to represent nodes in case of diagrams with more than 26 labels. In case of processing using a regular keyboard, these are multi-character codes starting with \u or \x. This results in messing up of the character-wise sync between the *wave* and *node* strings. The simplicity of single-character labeling is also lost.
+* The labeling is locked to a 50% threshold level and a fixed horizontal position in the brick for the transition point. This makes it inflexible to support configurable threshold levels or custom skins with rise and fall times varying from the default.
+
+WaveDrom 24.01 incorporates an additional scheme to specify invisible node labels purely from an arc endpoint perspective.
+This scheme requires the constraint on the node labels being upper or lower-case letters to be followed strictly.
+In particular, the appearance of '*[*' as the first character in an *edge* string is meant to denote the use of the new timing diagram coordinates scheme for node positioning.
+
+bla bla details of new timing diagram coordinates scheme bla bla
+
+
+
+More complex diagrams with a large number of reference transitions and/or 
+bla bla TODO bla bla
+
+supports mathematical expressions
 
 #### Enforcing Horizontal Arcs with Flexible Label Positioning
 
@@ -915,94 +1000,6 @@ It is possible to only apply a different style to the arrows alone by leaving th
 
 Additional examples of these features are also available in the [*customStyle*](#tuning-rendering-results-with-customstyle) section.
 
-#### Timing Diagram Coordinates Scheme for Node Locations
-
-WaveDrom supports the use of single-character node labels in the *node* attribute to indicate transition points in the signals.
-These can be re-used in the *edge* strings to denote the start and/or end points of arcs / edges.
-The naming scheme offers a number of advantages over other approaches:
-* End users don't have to consider them when adding signal lanes or spacers, as the node locations move along with the changes in the *signal* array
-* The *wave* and *node* strings have a 1-1 correspondence. They can be kept in sync one below the other to provide quick feedback on the transition being referenced by the node label.
-  
-The scheme works very well for small and simple diagrams. In more complex scenarios, there are a few drawbacks:
-* Transition points are correctly labeled only for a limited set of bricks such as those signifying a 0-1 or 1-0 transition, or between two multi-bit data bricks.
-* It may be cumbersome to deal with signal lanes having a large number of transitions that need to be referenced, or having the transition of interest late in the *wave* string.
-* Users may have to resort to Unicode characters to represent nodes in case of diagrams with more than 26 labels. In case of processing using a regular keyboard, these are multi-character codes starting with \u or \x. This results in messing up of the character-wise sync between the *wave* and *node* strings. The simplicity of single-character labeling is also lost.
-* The labeling is locked to a 50% threshold level and a fixed horizontal position in the brick for the transition point. This makes it inflexible to support configurable threshold levels or custom skins with rise and fall times varying from the default.
-
-WaveDrom 24.01 incorporates an additional scheme to specify invisible node labels purely from an arc endpoint perspective.
-Before delving into the grammar for the new scheme, it is useful to recount the legacy specifications. The first step is to split the *edge* string member into two parts:
-
-```javascript
-arcspec_label = new RegExp(/^([^\s]+)\s?([\s\S]*)$/)
-```
-
-This pattern represents the arc endpoints and shape as the first match, and the label as the second. These are separated by a 'space' character. Only the arc endpoints / shape is mandatory, and that specification should not have any 'space' characters in it.
-
-```javascript
-arcspec_label_eg = 'a-H test string<sub>subscript</sub>';
-arscpec_label_components = arcspec_label_eg.match(arcspec_label);
-arcspec_label_components[1]; // Returns the arc spec 'a-H'
-arcspec_label_components[2]; // Returns the edge / arc label 'test string<sub>subscript</sub>'
-```
-
-The arc endpoints are represented by single characters, while the allowed shape specifications follow the pattern below:
-
-```javascript
-edgeshape = new RegExp(/(~|-|-~|~-|-\||\|-|-\|-|->|~>|-~>|~->|-\|>|\|->|-\|->|<->|<~>|<~->|<-~>|<-\|>|<-\|->|\+)/)
-```
-
-The pattern specified above is exactly as per the implementation in WaveDrom 3.3.0. As we shall see in a later subsection, it ended up getting simplified during the refactoring exercise. Based on this *edgeshape* pattern, the *arcspec* pattern can be specified as:
-
-```javascript
-arcspec = new RegExp('(\\S)' + edgeshape.source + '(?=\\S)(\\S)$')
-```
-
-The first and third captured matches represent the endpoints / characters specified in the *node* string of the signal lanes. 
-The intention in WaveDrom 3.3.0 is for lower-case letters to be visible as node labels in the signal lane, while upper-case ones are meant to be invisible. 
-In formal terms, the node labels must obey the constraint that they must be either lower- or upper-case ones (Unicode included).
-
-```javascript
-arcspeceg = 'a-H';
-arccomponents = arcspeceg.match(arcspec);
-nl_from = arccomponents[1]; // node label of starting point
-nl_to = arccomponents[3]; // node label of ending point
-(nl_from.toLowerCase() != nl_from.toUpperCase()); // Should return true
-(nl_to.toLowerCase() != nl_to.toUpperCase()); // Should return true
-```
-
-WaveDrom 3.3.0 doesn't actually check for the above constraints, and any characters that fail the test (such as, say, '*[*', '*]*', '*(*', '*)*', etc.) are treated as visible lower-case letters. Examples of the legacy scheme for node specification are available in the SVGs below.
-
-<table width="100%">
-<tr width="100%">
-<td width="500" align="center"> <!-- Github-compatible Markdown for half page width -->
-<img src="demo/legacy-invisible-node-labels.svg" width="100%"/>
-</td>
-<td width="500" align="center"> <!-- Github-compatible Markdown for half page width -->
-<img src="demo/legacy-visible-node-labels.svg" width="100%"/>
-</td>
-</table>
-
-
-An [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-node-labeling-schemes) with the [WaveJSON](demo/legacy-invisible-node-labels.json) [files](demo/legacy-invisible-node-labels.json) for the above renders is also available for hands-on experiementation. 
-
-A demonstration of different legacy arc shapes (as deciphered using the ```edgeshape``` pattern above) is available in this [WaveJSON](demo/legacy-arc-shapes.json). 
-
-![](demo/legacy-arc-shapes.svg)
-
-Readers can experiment with both the ```default``` and ```professional``` in this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-refactoring-legacy-arc-shapes).
-
-
-WaveDrom 24.01 requires the constraint on the node labels being upper or lower-case letters to be followed strictly.
-In particular, the appearance of '*[*' as the first character in the edge string is meant to denote the use of the new timing diagram coordinates scheme for node positioning.
-
-bla bla details of new timing diagram coordinates scheme bla bla
-
-
-
-More complex diagrams with a large number of reference transitions and/or 
-bla bla TODO bla bla
-
-supports mathematical expressions
 
 #### Re-factored Edge Shape Implementation
 
