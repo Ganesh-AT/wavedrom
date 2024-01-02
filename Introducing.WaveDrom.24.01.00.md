@@ -972,12 +972,12 @@ nl_to = arccomponents[3]; // node label of ending point
 Lower-case letters are visible as node labels in the signal lane, while upper-case ones are invisible. Examples of the legacy scheme for node specification are available in the SVGs below.
 
 <table width="100%">
-<tr>
-<td width="50%">
-<img src="demo/legacy-invisible-node-labels.svg" />
+<tr width="100%">
+<td>
+<img src="demo/legacy-invisible-node-labels.svg" width="100%"/>
 </td>
-<td width="50%">
-<img src="demo/legacy-visible-node-labels.svg" />
+<td>
+<img src="demo/legacy-visible-node-labels.svg" width="100%"/>
 </td>
 </table>
 
