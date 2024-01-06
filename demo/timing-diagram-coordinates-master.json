@@ -1,0 +1,83 @@
+{
+  config: {
+    skin: 'professional', hscale: 1, marks: true, hbounds: [0,18.5], 
+    customStyle: '.arc_path{stroke-dasharray:1}' +
+                 '.nullify_arc_path{stroke-dasharray:0}'+
+                 '.greenEdge{stroke:green;stroke-dasharray:0}' +
+                 '.redEdge{stroke:red;}' +
+                 '.greenArrow{fill:green;stroke:green}' +
+                 '.redArrow{fill:red;stroke:red}',
+    fit2pane: true,wrapSvgInImg: 0,    
+  },
+  head:{tick:0, text: "Timing Diagram Coordinates Scheme"},
+  signal: [
+    {}, // lane 0
+    {name: 'SCK-1', wave: '0<.>1<.>'.repeat(8), 
+        node: '.<.>A<.>B..C<.>D', period: 1, phase: 0.1, id: 'sck1' }, // lane 1
+    {}, // lane 2
+    {name: 'CS#-1', wave: '0......<.>.......1.0...', phase: 0.25, overrideGapsPhase: -0.5, id: 'cs'}, // lane 3
+    {node: '........E', phase: -0.7}, // lane 4
+    {name: 'SO-1', wave:'<z>' + '.<x>='.repeat(10), phase: .7, id: 'so1',
+     node: '..F.G', data:['','','','LSB OUT'] }, // lane 5
+    {}, // lane 6
+  ],
+  // EdgeSpec ::= <NodeLabel-SingleChar><EdgeShape-StringNoSpace><NodeLabel-SingleChar>[\s<Label-StringOrTspan>]
+  //      |
+  //      \[<TDCSpec>\]<EdgeShape-StringNoSpace>\[<TDCSpec>\]\[<EdgeClassName-StringNoSpace>\]\[<ArrowClassName-StringNoSpace>\][\s<Label-StringOrTspan>]
+  // TDCSpec ::= <LaneIdx-ZeroOrPositiveInteger>:<PeriodRelativeXPosition-Float>[,<LaneIdxRelativeYPosition-Float>]
+  //      | <NodeLabel-SingleChar>
+  // default / professional:
+  // For rising cycle  : (cycnum*period)+(.075+(0.15*tlevel)-phase)/hscale,tlevel
+  // For falling cycle : (cycnum*period)+(.075+(0.15*(1-tlevel)-phase)/hscale,(1-tlevel)
+  edge:[
+    'A~>F', 
+    // legacy edge specifications
+    
+    '[B]~[G][nullify_arc_path][redArrow]', 
+    // nullify_arc_path in action with labeled nodes + coords scheme + superfluous arrow class ignored
+    
+    'A~G', 
+    // arc_path in action for legacy spline
+    '[0:1]+1+[0:2][greenEdge][greenArrow] ["tspan",{"style":"fill:red;"},"over"]', 
+    // overrides arc_path and also modifies color with full tspan support
+    
+    '[B]<-~>[so1 - 1 + 1:6.45] t<sub>VLD</sub>', 
+    // Mix two types of TDCSpec, also show that math expressions with spaces are supported in wavelane specifications
+    
+    '[1:4.5 + (.075 + (0.15 * 0.5) - 0.1)]-[4:4.55]', // TDCSpec without optional Y position, using transition locator formula above
+    '[4:4.55]<>[5:5.95] t<sub>V</sub>', // TDCSpec with label
+    
+    '[1:6.125,0]-[2:6.125,0.5][greenEdge]', // TDCSpec with full Y and no arrows
+    
+    '[2:6.125]<>[1:7.475,0][greenEdge][greenArrow] t<sub>WL</sub>', 
+    // TDCSpecs mix with default Y and fullY, label, and both edge and arrow overrides
+    
+    '[0:7.625]-[1:7.625,1][redEdge]', // Edge with 100% threshold level at one end, no arrow
+    
+    '[(sck1 - 1):7.625,0.5]<>[1:8.975,1][redEdge][redArrow] t<sub>WH</sub>', 
+    // auto-pull up specifications with expression for wave lane and default label position along with edge / arrow overrides 
+    
+    '[4:14.4]<1>[4:15.875] t<sub>CS-to-SO</sub>', 
+    // arc_path in action with auto-pull up specifications and explicit label positioning
+    
+    '[2:1.5]+[cs-1:2.25,1]', // arc_bracket test with arc_path in action
+    
+    '[cs:1.5]+[cs-1:2.25,1][redEdge]', 
+    // arc_bracket (default color of 'arrow'), with arc_path override by redEdge, and expressions for wave lanes
+    
+    '[4:1.75]->[3:3,-0.75][][redArrow]', 
+    // arc_path with no override on edge, but override on arrow alone
+    
+    // TDCSpec int and float can be mathematical expressions!
+    // useful for computing location of rising and falling edges corresponding to a particular threshold level
+    '[1:9 + (.075 + (0.15*(1 - 0) - 0.1)), 0]<|->[5:11+(.075+(0.15*(1-0.5)-0.25)),(1-0.5)][nullify_arc_path] t<sub>|-</sub>',
+    // can have spaces in the expression for better clarity
+    
+    '[1:10.5+(.075+(0.15*(0.3)-0.1)),(.3)]<-|->[so1:11.5+(.075+(0.15*(1-0.5)-0.25)),(1-0.5)][nullify_arc_path] t<sub>-|-</sub>',
+    // can mix id and lane index in the wavelane spec
+    '[sck1:13.5+(.075+(0.15*(0.5)-0.1)),(.5)]<-|>[cs:14.5+(.075+(0.15*(1-0.5)-0.25)),(1-0.5)][nullify_arc_path] t<sub>-|</sub>',
+    
+    '[3:16.5+(.075+(0.15*(0.5)-0.25)),(.5)]<~>[1:18+(.075+(0.15*(1-0.5)-0.1)),(1-0.5)][redEdge][redArrow] t<sub>~</sub>'
+    // override both edge and arrow styles with classes
+  ],
+}

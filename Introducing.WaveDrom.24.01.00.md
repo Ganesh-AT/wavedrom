@@ -12,7 +12,7 @@
       - [Waveform Rendering Palette Modification with *colorMode*](#waveform-rendering-palette-modification-with-colormode)
     - [New Signal Attributes](#new-signal-attributes)
       - [Referencing Signal Lanes with the *id* Attribute](#referencing-signal-lanes-with-the-id-attribute)
-      - [Multi-Threshold Annotations with \*node\_tlevel\* and \*node\_tpos\*](#multi-threshold-annotations-with-node_tlevel-and-node_tpos)
+      - [Multi-Threshold Annotations with *node\_tlevel* and *node\_tpos*](#multi-threshold-annotations-with-node_tlevel-and-node_tpos)
       - [Tweaking Data Labels Rendering with *dlClass* and *dlStyle*](#tweaking-data-labels-rendering-with-dlclass-and-dlstyle)
       - [Assembling Multiple Waveforms in a Single Lane with *overlayOnLane*](#assembling-multiple-waveforms-in-a-single-lane-with-overlayonlane)
       - [Tweaking Gaps Placement with *addGapsPhase*](#tweaking-gaps-placement-with-addgapsphase)
@@ -242,21 +242,21 @@ The CSS and SVG specifications share a lot in common. CSS styles
 specified anywhere in the document (even outside the SVG container, or
 inside another one) are available for use within a SVG, and vice-versa.
 This applies to SVG *defs* elements too. *defs* specified for a SVG can
-end up causing issues in another SVG on the same page if it re-uses the
-same element name with different characteristics. WaveDrom includes
+end up causing issues in another SVG on the same page if they have
+elements with different characteristics using the same names.
+WaveDrom includes
 support for embedding multiple waveforms in a single webpage. All the
 examples for this feature currently employ the same skin for all
 waveforms in a given page. The inability to embed waveforms using
 different skins, say, *default* and *narrow*, on the same page is an
 oft-raised issue.
 
-WaveDrom 24.01 initially addressed this issue by prefixing each brick
+Ambarella's custom fork initially addressed this issue by prefixing each brick
 element in the *defs* section and the utilized class names in the
-*style* section using a skin-based identifier. However, this doesn\'t
-address the markers or user-defined styles. A [new configuration bit
-(*wrapSvgInImg*)](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R55)
-is available in WaveDrom 24.01 to prevent leakage of such elements
-across different SVGs on the same page.
+*style* section using a skin-based identifier. However, this did not
+address the markers or user-defined styles. WaveDrom 24.01 incorporates a 
+[new configuration bit (*wrapSvgInImg*)](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R55)
+to prevent leakage of such elements across different SVGs on the same page.
 
 This bit is set to *true* by default to allow embedding of multiple SVGs
 with different characteristics on the same page. The ObservableHQ
@@ -294,7 +294,7 @@ rendering for both the WaveJSON inputs. Secondly, the browser developer
 tools show that the SVGs are embedded directly in the page, and their
 elements can be tracked from the same view.
 
-This config attribute has no impact on the appearance of SVGs rendered
+This *config* attribute has no impact on the appearance of SVGs rendered
 from standalone WaveJSON inputs. Advanced users might prefer to turn off
 the feature to check up on the organization of the SVG elements using
 the browser\'s developer tools. This is useful for debugging purposes,
@@ -327,8 +327,8 @@ Playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-txtbaseline)
 
 This feature is recommended for use only in small diagrams with few arc
 / edge labels. Complex diagrams often require much more flexibility,
-which is provided by the user-configurable \*arc*label\* style class in
-the *customStyle\_ option. WaveDrom 24.01 also brings in *tspan* support
+which is provided by the user-configurable *arc_label* style class in
+the *customStyle* option. WaveDrom 24.01 also brings in *tspan* support
 for edge labels, and that allows for per-label modification using native
 CSS attributes.
 
@@ -360,24 +360,23 @@ The elements corresponding to the different style classes can be
 inferred from the WaveDrom parlance for different components of a
 rendered waveform. Two different renders are reproduced below to bring
 them out. Almost all elements in the first waveform below are created
-using straightforward WaveJSON features, except for the text label that
+using straightforward WaveJSON features, except for the '4-bit One-Hot Signal' label that
 appears to be part of the edge specifications. The annotation is
 actually rendered as a text label, as evident from this
 [line](https://github.com/Ganesh-AT/wavedrom/blob/wavedrom-24.01/demo/customStyle-options.json#L66).
 
 ![](demo/WaveDrom-Anno.svg)
 
-The aspects below deserve pointing out in the above diagram: \* Text
-labels are rendered from the *tl* specifications in the *wave*
-component, and is part of the new WaveDrom 24.01 grammar. \* Group
-labels are the name given to the string specified as the first member of
-any array that is a first-level component of the *signal* array. \*
-Group paths are the name given to the shapes rendered to signify a
-collection of signals. \* Arc labels are either the strings that follow
-the node and arc shape components in the *edge* array components or the
-node labels themselves. \* Arc paths denote the rendering of the lines
-resulting from the arc shape specifications in the *edge* array
-components
+The aspects below deserve pointing out in the above diagram: 
+* Text labels are rendered from the *tl* specifications in the *wave* component, 
+which is part of the new WaveDrom 24.01 grammar. 
+* Group labels are the name given to the string specified as the first member of
+any array that is a first-level component of the *signal* array. 
+* Group paths are the name given to the shapes rendered to signify a collection of signals. 
+* Arc labels are either the strings that follow the node and arc shape components in the members of 
+the *edge* array, or the node labels themselves. 
+* Arc paths denote the rendering of the lines resulting from the arc shape specifications in the 
+members of the *edge* array
 
 ![](demo/WaveDrom-Anno-pw-Skin.svg)
 
@@ -532,7 +531,7 @@ WaveJSON](demo/colorMode-purebw.json)
 ![](demo/colorMode-purebw.svg)
 
 It is not advisable to use colored data bricks (*wave* characters 3
-through 9) in WaveJSON that might eventually get rendered in the
+through 9) or colorful custom styles in WaveJSON that might eventually get rendered in the
 *purebw* mode.
 
 A demonstration of this configuration option is available in this
@@ -549,29 +548,32 @@ attribute](https://github.com/Ganesh-AT/wavedrom/blob/wavedrom-24.01/WaveJSON-Gr
 The [valid character
 set](https://github.com/Ganesh-AT/wavedrom/blob/wavedrom-24.01/WaveJSON-Grammar.txt#L20)
 for this string includes lower and upper-case English alphabets, digits,
-and \'\_\'. However, the string can\'t start with a digit.
+and \'\_\'. However, the string can\'t start with a digit, and needs to be at least two characters long.
 
 This identifier can be referenced in the *overlayOnLane* feature. The
 timing diagram coordinates scheme for specifying nodes in the edge
 string can also use it in the place of the lane number. Examples of *id*
 usage are spread throughout the remainder of this section.
 
-#### Multi-Threshold Annotations with \*node_tlevel\* and \*node_tpos\*
+#### Multi-Threshold Annotations with *node_tlevel* and *node_tpos*
 
 WaveDrom 24.01 incorporates multiple schemes for annotating different
 threshold levels. This section deals with the more readable approach
-involving [two new signal attributes - \*node_tlevel\* and
-\*node_tpos\*](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R97-R98).
+involving [two new signal attributes - *node_tlevel* and
+*node_tpos*](https://github.com/Ganesh-AT/wavedrom/compare/master...wavedrom-24.01#diff-5d9dd9d1500a808115d428b898d28cb38c6a5582a822ede99298dad4fd0b4bc4R97-R98).
+These two string attributes track the *node* string, whose characters represent the node labels.
+Each character in the *node*, *node_tpos*, and *node_tlevel* strings 
+has a 1-1 correspondence with a *wave* character.
 
-The \*node_tlevel\* and \*node_tpos\* string attributes track the *node*
-string. The node label is the *node* character and it has a 1-1
-correspondence with a *wave* character.
+The *node_tlevel* characters processed by the WaveDrom engine matches the following regular expression:
 
-\*node_tlevel\* characters matches the regex /\[0-9\]\|a/. The eleven
-distinct characters map to signal levels of 0% to 100% in steps of 10%.
-Other characters map to a signal level of 50%. They represents the
-threshold level on the transition path of the corresponding *wave*
-character\'s brick set. The \*node_tlevel\* can determine the vertical
+```javascript
+const node_tlevel_pat = new RegExp(/[0-9]|a/);
+```
+These eleven distinct hexadecimal digits map to signal levels of 0% to 100% in steps of 10%.
+Characters that don't match the above pattern  map to a signal level of 50%. 
+The signal level represents the threshold level on the transition path of the corresponding *wave*
+character\'s brick set. The *node_tlevel* can determine the vertical
 position (y-axis) for node placement. However, it only contributes
 partially to the determination of the horizontal position (x-axis). This
 is because a threshold level of, say, 80% can place the node to either
@@ -579,11 +581,15 @@ the left or the right of the transition\'s midpoint depending on its
 rising or falling nature.
 
 The horizontal (x-axis) position can be fully determined only with the
-additional information provided by the corresponding \*node_tpos\*
-character. The character matches the regex /u\|d\|U\|D/. These
-correspond to the rising (u) and falling (d) transitions. The upper-case
+additional information provided by the corresponding *node_tpos*
+character. The processed characters in this string need to match the following regular expression:
+
+```javascript
+const node_tpos_pat = new RegExp(/u|d|U|D/);
+```
+These correspond to the rising (u) and falling (d) transitions. The upper-case
 versions are used to override the y-position dictated by the
-\*node_tlevel\* character, and use that only for determining the
+*node_tlevel* character, and use that only for determining the
 x-position. In such cases, the y-position is assumed to be at 50%.
 
 In some cases, it becomes necessary to place multiple nodes on the same
@@ -600,23 +606,23 @@ corresponding ObservableHQ playground is linked
 
 #### Tweaking Data Labels Rendering with *dlClass* and *dlStyle*
 
-Text is rendered by the WaveDrom engine as \\\<tspan\> elements placed
-in \\\<text\> containers. These containers are usually part of a group
-of elements under the \\\<g\> container. The style attributes of the
+Text is rendered by the WaveDrom engine as \<tspan\> elements placed
+inside \<text\> containers. These containers are usually part of a group
+of elements under the \<g\> container. The style attributes of the
 text are dictated by the following order of precedence, with the ones
 higher up the list being able to override the specifications mandated by
-those below: 1. *tspan* attributes (which can include styling, and other
-presentation attributes) 2. *style* attributes for the *text* container
-of the *tspan* element (in the SVG specifications, these attributes
-apply to all the *tspan* children) 3. *class* attribute for the *text*
-container of the *tspan* element (the same class can be specified for
+those below: 
+1. *tspan* attributes (which can include styling, and other presentation attributes) 
+2. *style* attributes for the *text* container of the *tspan* element (in the SVG specifications, these attributes
+apply to all the *tspan* children) 
+3. *class* attribute for the *text* container of the *tspan* element (the same class can be specified for
 multiple *text* elements)
 
 A timing diagram may have multiple data labels in different signal
 lanes. As described above, these labels are essentially *tspan* elements
 in the rendered SVG. Requirements dictating the modification of the
 appearance of all data labels can be addressed by specifying the
-\*data*label\* class in the *customStyle\_ config attribute. The
+*data_label* class in the *customStyle* attribute. The
 rendering of data labels can also be modified on a per-lane basis using
 the [new *dlClass* and *dlStyle*
 attributes](https://github.com/Ganesh-AT/wavedrom/blob/wavedrom-24.01/WaveJSON-Grammar.txt#L99-L100).
@@ -661,8 +667,8 @@ using the *id* scheme. This is useful for referencing the previous and
 next lanes of a particular target for the purpose of adding labeled
 nodes. An
 [example](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-node-specifiers-demo)
-was presented in the section detailing the \*node_tlevel\* and
-\*node_tpos\* features.
+was presented in the section detailing the *node_tlevel* and
+*node_tpos* features.
 
 It is advisable to specify all signal objects with *overlayOnLane* at
 the end of the signal array (after all normal and target lanes).
@@ -706,9 +712,9 @@ link of the [WaveJSON](demo/addGapsPhase-demo.json) of the above SVG.
 
 #### Modifying Bricks on a Per-Lane Basis with *overrideSkin*, *skinClass*, and *skinStyle*
 
-The section detailing the specification of custom styles using the new
-*customStyle* attribute in the *config* obection also dealt with the
-rendering of the lanes using bricks. The customization table row
+The [section](#tuning-rendering-results-with-customstyle) detailing the specification of custom styles using the new
+*customStyle* attribute in the *config* obect also dealt with the
+rendering of the lanes using bricks. The [customization table](#customStyleTbl) row
 corresponding to the bricks in the skin provides pointers on the
 features to use for different requirements.
 
@@ -718,13 +724,12 @@ system is a drawn-out process. The selective customization support
 incorporated into WaveDrom 24.01 is easier to use and more flexible. The
 visual appearance of the lines in each lane is dictated by the following
 order of precedence, with the ones higher up the list being able to
-override the specifications mandated by those below: 1. Skin style
-(in-line) specified for the paths in the bricks using the *skinStyle*
-attribute 2. Skin style specified for the paths in the bricks using the
-*skinClass* attribute (the specified class can be used for multiple
-lanes) 3. Separate skin specified for a particular lane using the
-*overrideSkin* attribute 4. Skin specified in the *config* object using
-the *skin* attribute
+override the specifications mandated by those below: 
+1. Skin style (in-line) specified for the paths in the bricks using the *skinStyle* attribute 
+2. Skin style specified for the paths in the bricks using the *skinClass* attribute 
+(the specified class can be used for multiple lanes) 
+3. Separate skin specified for a particular lane using the *overrideSkin* attribute 
+4. Skin specified in the *config* object using the *skin* attribute
 
 The *skinClass* attribute can reference multiple classes
 (space-separated), and attributes specified in the later ones override
@@ -763,7 +768,7 @@ add comments in signal lanes, annotate labels on single-bit brick sets,
 labeling piece-wise linear lanes, and even adding legend-style
 annotations, as shown in the above SVG. It can also be used to achieve
 effects such as signal annotations in different cycles, as shown in the
-data lane of the bipolar waveform in the *customStyle* section.
+data lane of the bipolar waveform in the [*customStyle* section](#tuning-rendering-results-with-customstyle).
 
 The [WaveJSON](demo/text-labels-with-tl.json) and [ObservableHQ
 playground
@@ -827,7 +832,7 @@ WaveDrom 24.01 re-architects the edge / arrows feature and its implementation in
 4. New timing diagram coordinates scheme (in addition to the existing node labels) for the specifying the end points of arcs.
 5. Refactored implementation of arc / arc shape renders to reduce cyclomatic complexity (invisible to end users)
 
-A detailed demonstration of the above aspects is provided in this section. In order to provide context to the discussion, a recount of the legacy specifications is helpful. The *edge* attribute is an array of strings, with each member representing an arc in the waveform. The WaveDrom 3.3.0 engine processes each string by splitting it into two parts.
+A detailed demonstration of the above aspects is provided in this section. In order to provide context to the discussion, a recount of the legacy specifications is helpful. The *edge* attribute is an array of strings, with each member representing an arc in the waveform. The WaveDrom 3.3.0 engine processes each string by splitting it into two parts based on the position of the first 'space' character in it. Formally speaking, the following regular expression is used:
 
 ```javascript
 arcspec_label = new RegExp(/^([^\s]+)\s?([\s\S]*)$/)
@@ -837,34 +842,36 @@ This pattern represents the arc endpoints and shape as the first match, and the 
 
 ```javascript
 arcspec_label_eg = 'a-H test string<sub>subscript</sub>';
-arscpec_label_components = arcspec_label_eg.match(arcspec_label);
+
+arcspec_label_components = arcspec_label_eg.match(arcspec_label);
 arcspec_label_components[1]; // Returns the arc spec 'a-H'
 arcspec_label_components[2]; // Returns the edge / arc label 'test string<sub>subscript</sub>'
+
+possibe_edgeshape = arcspec_label_components[1].slice(1,-1); // Returns the edge shape '-'
 ```
 
-The arc endpoints are represented by single characters, while the allowed shape specifications follow the pattern below:
+The arc endpoints are represented by single characters, while the allowed shape specifications follow the regular expression pattern pattern below:
 
 ```javascript
-edgeshape = new RegExp(/(~|-|-~|~-|-\||\|-|-\|-|->|~>|-~>|~->|-\|>|\|->|-\|->|<->|<~>|<~->|<-~>|<-\|>|<-\|->|\+)/)
+edgeshapes = new RegExp(/^(~|-|-~|~-|-\||\|-|-\|-|->|~>|-~>|~->|-\|>|\|->|-\|->|<->|<~>|<~->|<-~>|<-\|>|<-\|->|\+)$/);
+
+possible_edgeshape.match(edgeshapes); // Should not be null
 ```
 
-The pattern specified above is exactly as per the implementation in WaveDrom 3.3.0. As we shall see in a later subsection, it ended up getting simplified during the refactoring exercise. Based on this *edgeshape* pattern, the *arcspec* pattern can be specified as:
+The pattern specified above is exactly as per the implementation in WaveDrom 3.3.0. As we shall see in a later subsection, it ended up getting simplified during the refactoring exercise. 
 
 ```javascript
-arcspec = new RegExp('(\\S)' + edgeshape.source + '(?=\\S)(\\S)$')
+arc_from = arcspec_label_components[1].slice(0,1); // node label of starting point
+arc_to = arcspec_label_components[1].slice(-1); // node label of ending point
 ```
 
-The first and third captured matches represent the endpoints / characters specified in the *node* string of the signal lanes. 
-The intention in WaveDrom 3.3.0 is for lower-case letters to be visible as node labels in the signal lane, while upper-case ones are meant to be invisible. 
+The ```arc_from``` and ```arc_to``` represent the endpoints / characters specified in the *node* string of the signal lanes. 
+The intention in WaveDrom 3.3.0 is for lower-case letters to be visible as node labels in the signal lane, while upper-case ones are meant to be invisible (and meant for use only in the *edge* string). 
 In formal terms, the node labels must obey the constraint that they must be either lower- or upper-case ones (Unicode included).
 
 ```javascript
-arcspeceg = 'a-H';
-arccomponents = arcspeceg.match(arcspec);
-nl_from = arccomponents[1]; // node label of starting point
-nl_to = arccomponents[3]; // node label of ending point
-(nl_from.toLowerCase() != nl_from.toUpperCase()); // Should return true
-(nl_to.toLowerCase() != nl_to.toUpperCase()); // Should return true
+(arc_from.toLowerCase() != arc_from.toUpperCase()); // Should return true
+(arc_to.toLowerCase() != arc_to.toUpperCase()); // Should return true
 ```
 
 WaveDrom 3.3.0 doesn't actually check for the above constraints, and any characters that fail the test (such as, say, '*[*', '*]*', '*(*', '*)*', etc.) are treated as visible lower-case letters. Examples of the legacy scheme for node specification are available in the SVGs below. The use of custom *tspan* markup in the edge / arc label (using the ```tspan``` *npm* package) is also demonstrated.
@@ -887,6 +894,9 @@ A demonstration of different legacy arc shapes (as deciphered using the ```edges
 
 Readers can experiment with both the ```default``` and ```professional``` skins in this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-refactoring-legacy-arc-shapes) for different arrow styles. It must be noted that the ```professional``` skin is only available in WaveDrom 24.01.
 The edge / arc label accompanying each ```arcspec``` references the type of edge shape being used.
+
+The following subsections detail the new features of WaveDrom 24.01 related to the *edge* feature 
+based on the context presented above.
 
 #### Full *tspan* Support for Edge Labels
 
@@ -919,16 +929,20 @@ WaveDrom 3.3.0 supports horizontal arcs, but requires some heavy lifting on the 
 
 WaveDrom 24.01 introduces new edge shapes (the string between the node labels or timing diagram coordinates) to address these shortcomings. 
 The new shape strings have a length of either two or three. 
-The middle character is a number between 0 and 8 to denote the label position.
+The middle character is an optional number between 0 and 8 to denote the label position. Its default value is 0.
+In formal terms, the new shapes match the following regular expressions pattern:
 
 ```javascript
-regpat = new RegExp(/(<|>|\+)[0-8](>|<|\+)/)
+new_edgeshapes = new RegExp(/^(>[0-8]?<|<[0-8]?>|\+[0-8]?\+)$/)
 ```
 
-There are a few restrictions in addition to the above pattern matching. 
-If a '+' is involved, it must be the frst and last character in the shape string.
-If either '&gt;' or '&lt;' is involved, both of them must appear int he shape string, and the first and last characters can't be the same. 
-The '><' pattern generates inward-pointing arrows, while the '<>' pattern generates a regular horizontal line with arrows at either end.
+The horizontal arc is enforced by computing a 'right-side node' which retains the same X position of the actual node to the right of the edge shape, but has the Y position of the node to its left. In the case of regular arrow markers, a vertical line is automatically rendered between the computed right-side node and the actual node to the right of the edge shape.
+
+The behavior of the three distinct shape patterns above is enumerated below:
+1. The '><' pattern generates inward-pointing arrows, with the markers at the left node and the computed right-side node.
+2. The '<>' pattern generates a regular horizontal line between the left node and the computed right-side node, with markers at either end.
+3. The '++' pattern generates a regular horizontal line between the left node and the computed right-side node, with 'tee' markers at either end.
+
 The primary difference between '<>' and the legacy '<->' lies in the automatic generation of a vertical line from the node on the right to generate the arc in the same horizontal plane.
 
 The use of the '<>' edge shape pattern is brought out in this [WaveJSON](demo/horiz-arcs-w-lab-pos-part-1.json), and its rendering is reproduced below.
@@ -961,18 +975,16 @@ Readers can perform further experimentation on this feature using this [Observab
 
 #### Custom Styling for Arcs / Edges
 
-The [WaveJSON](demo/custom-edge-shape-styling.json) used to generate the SVG below can also be subject to further experimentation in the same [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-customizing-arcs) link specified in the previous subsection.
-
-![](demo/custom-edge-shape-styling.svg)
-
-Custom styling support is available only if the node labels specifying the end points are enclosed in square brackets, or, the new timing diagram coordinates scheme is used for that purpose.
+Custom styling support is available only if the node labels specifying the end points are enclosed in square brackets, or, the new timing diagram coordinates scheme is used. This scheme is explained in detail in the next subsection.
 In either case, the second point is followed by either one or two strings within square brackets themselves.
 The first string specifies the class in the *customStyle* configuration that needs to be applied to the arc path.
 The second string specifies the one that needs to be applied to the start and end arrow markers.
 Note that this string doesn't yet apply to the tee markers, and will be addressed in a future release.
 It is possible to only apply a different style to the arrows alone by leaving the first square brackets set empty.
 
-Additional examples of these features are also available in the [*customStyle*](#tuning-rendering-results-with-customstyle) section.
+<img id="custom-edge-shape-styling" src="demo/custom-edge-shape-styling.svg">
+
+The [WaveJSON](demo/custom-edge-shape-styling.json) used to generate the SVG below can also be subject to further experimentation in this [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-customizing-arcs). Additional examples of these features are also available in the [*customStyle*](#tuning-rendering-results-with-customstyle) section.
 
 #### Timing Diagram Coordinates Scheme for Node Locations
 
@@ -986,24 +998,126 @@ The scheme works very well for small and simple diagrams. In more complex scenar
 * Transition points are correctly labeled only for a limited set of bricks such as those signifying a 0-1 or 1-0 transition, or between two multi-bit data bricks.
 * It may be cumbersome to deal with signal lanes having a large number of transitions that need to be referenced, or having the transition of interest late in the *wave* string.
 * Users may have to resort to Unicode characters to represent nodes in case of diagrams with more than 26 labels. In case of processing using a regular keyboard, these are multi-character codes starting with \u or \x. This results in messing up of the character-wise sync between the *wave* and *node* strings. The simplicity of single-character labeling is also lost.
-* The labeling is locked to a 50% threshold level and a fixed horizontal position in the brick for the transition point. This makes it inflexible to support configurable threshold levels or custom skins with rise and fall times varying from the default.
+* The labeling is locked to a 50% threshold level and a fixed horizontal position in the brick for the transition point. The lack of support for configurable threshold levels or skins with custom rise and fall times may be an issue for complex diagrams.
 
 WaveDrom 24.01 incorporates an additional scheme to specify invisible node labels purely from an arc endpoint perspective.
 This scheme requires the constraint on the node labels being upper or lower-case letters to be followed strictly.
-In particular, the appearance of '*[*' as the first character in an *edge* string is meant to denote the use of the new timing diagram coordinates scheme for node positioning. The use of a 'space' character to separate the ```arcspec``` and the ```label``` is retained (the project roadmap does include plans to allow 'space' characters in the ```arcspec``` for the new scheme). 
-The remainder of this subection focuses only on the ```arcspec``` component.
+In particular, the appearance of '*[*' as the first character in an *edge* string is meant to denote the use of the new timing diagram coordinates scheme for node positioning. 
 
+*edge* strings adopting the timing diagram coordinates scheme can be specified using the following structure:
+```
+"[Node Specifier]ArcShape[Node Specifier][Optional Arc Style][Optional Arrow Style] Edge Label"
+```
 
-https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-timing-diagram-coordinates-scheme
+The following aspects of the above structure are to be noted:
+* The '*[*' and '*]*' in the above structure are actual parts of the string.
+* The first node specifier represents the arc's start point
+* The second node specifier represents the arc's end point.
+* The 'ArcShape' is a set of characters that match either the legacy edge shapes or the newly added edge shapes pattern.
+* The optional arc style and optional arrow style specify the name(s) of the class(es) (defined in the *customStyle* section) to modify the rendering style of the arc paths and the arrow markers. 
+  * Multiple classes can be specified for each component and need to be separated by 'space' characters. 
+  * Rules governing specification of arrow styles without arc styles are covered in [this subsection](#custom-styling-for-arcs--edges).
+* The edge label is one of the following:
+  * A normal string, 
+  * String that incorporates HTML-like custom *tspan* markups, as defined in the ```tspan``` npm package
+  * A full *tspan* specification using JSON notation (as demonstrated in [this subsection](#full-tspan-support-for-edge-labels)).
 
-bla bla details of new timing diagram coordinates scheme bla bla
+The formal parsing of the timing diagram coordinates is done in a sequence of steps, the first of which involves breaking down the above structure into its components by removing the delimiting square brackets and 'space' character.
 
+```javascript
+TDCSPat = new RegExp(/\[([^\]]*)\]([^[]*)\[([^\]]*)\](?:(?=\[)\[([^\]]*)\])?(?:(?=\[)\[([^\]]*)\])?\s*(.*|$)/);
+```
 
+The above pattern has six matching groups. The first one starts after the '[', and continues tracking all characters (including spaces) that are not a ']'. After traversing the ']', the second group starts accumulating characters until a '[' signifying the start of the 'to' node specifications is reached. The third group follows the same collection strategy as the first one. After that, the fourth and fifth groups use lookaheads to check for optional '[' characters that represent the start of the class name(s) for the arc and arrow styles. The optional label following these (with a 'space' character as the delimiter) is the sixth match. The optional components return undefined when not specified. 
 
-More complex diagrams with a large number of reference transitions and/or 
+Based on the description of the new structure and the match groups above, only the node specifier component requires additional elucidation.
+
+The second step in the parsing checks the length of the captured node specifier components. Single-character captures are treated as legacy node labels.
+The examples in the [WaveJSON](demo/custom-edge-shape-styling.json) used to generate this [SVG](#custom-edge-shape-styling) and reproduced below.
+
+```javascript
+  edge: [
+    // Legacy node labels in legacy edge specifications scheme
+    'K<1>L Test',
+    // Legacy node labels in timing diagram coordinates scheme, enabling custom edge and arrow styling
+    '[I]+5+[J][redEdge][redArrow] t<sub>time</sub>', 
+    '[K]~[C][redEdge]',
+    '[J]-~[C][dotBlue]',
+    '[A]<->[C][redEdge][redArrow] t<sub>LOW</sub>'
+  ], 
+```
+
+The above example only incorporates upper-case named labels. Readers can utilize the [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-customizing-arcs) to experiment with visible lower-case labels that can be specified in a similar manner.
+
+Multi-character node specifiers offer immense flexibility, and will be analyzed used extracts from the [WaveJSON](demo/timing-diagram-coordinates-master.json) for the SVG below. An [ObservableHQ playground](https://observablehq.com/@ganesh-at-ws/wavedrom-24-01-timing-diagram-coordinates-scheme) is also available.
+
+![](demo/timing-diagram-coordinates-master.svg)
+
+Valid multi-character node specifiers are made up of two strings separated by a ':'. 
+The first string (referred to from hereon as ```WaveLaneExpr```) represents the signal lane number.
+The second string represents the scaled coordinates within that lane, and obeys the following grammar notation:
+
+```
+{XPosExpr} (',' {YPosExpr})?
+```
+
+All three (```WaveLaneExpr```, ```XPosExpr```, and ```YPosExpr```) are evaluated as mathematical expressions with some caveats:
+* Supported mathematical operations include addition, subtraction, multiplication, and division.
+* Parantheses ('(' and ')') are supported.
+* Other supported components include real numbers and strings that are already present as *id* attributes in the signal lanes.
+
+```XPosExpr``` and ```YPosExpr``` represent scaled coordinates. The former represents the cycle number, and the latter is the signal level (between 0 and 1 to stay within the vertical limits of the lane's bricks, but there is no constraint preventing the number from extending into adjacent lanes).
+In the absence of a ```YPosExpr```, a default of 0.5 is assumed for the scaled Y coordinate.
+
+The above feature can result in edges being represented in a simple and straightforward manner like the example below.
+
+```javascript
+  edge: [
+    '[0:1]+1+[0:2][greenEdge][greenArrow] ["tspan",{"style":"fill:red;"},"over"]', 
+    // overrides arc_path and also modifies color with full tspan support
+  ]
+```
+
+This renders on wave lane 0 extends from cycle #1 to cycle #2 at the default vertical position of 0.5. 
+
+![](demo/tdcs-00.png)
+
+This approach is suitable for diagrams where the ordering of the lanes is pre-decided, and the number of lanes is small.
+In other cases where lanes might be shifted around or spacers added at a later time, the indices mentioned as direct numbers in the ```WaveLaneExpr``` may no longer point to the desired wave lane. Additionally, keeping track of wave lane indices in the presence of a large number of lanes is a pain for the WaveJSON creator.
+While comments can always be added as a prefix or suffix for each lane, inserting spacers or new lanes end up creating more work as the comments end up getting invalidated.
+
+WaveDrom 24.01 also allows signal lane identifiers to be used in lieu of the lane index.
+This leaves the tracking of the actual lane index to the WaveDrom engine, allowing spacers and additional lanes to be added without worrying about the existing node positions. 
+A limited number of mathematical operations can also be used with the identifiers. 
+This is especially useful when annotating timing parameters using nodes either to the top or bottom of a signal lane.
+The usage of these features can co-exist with other schemes for locating nodes at the other end of the arc, as shown in the two examples below.
+
+```javascript
+  edge: [
+    '[B]<-~>[so1 - 1 + 1:6.45] t<sub>VLD</sub>', 
+    // Mix two types of TDCSpec, also show that math expressions with spaces are supported in wavelane specifications
+    
+    '[(sck1 - 1):7.625,0.5]<>[1:8.975,1][redEdge][redArrow] t<sub>WH</sub>', 
+    // auto-pull up specifications with expression for wave lane and default label position along with edge / arrow overrides     
+  ]
+```
+
+In the first edge, the legacy node label 'B' is being used within square brackets to allow for the other endpoint to be specified with the new scheme.
+The 'to' marker is placed on the lane corresponding to the *id* of 'so1' (with a dummy increment and decrement just to show that mathematical expressions are supported).
+The X position is set almost at the half-way point on cycle #6, and the default vertical position of 0.5 is used within that lane.
+
+<img src="demo/tdcs-01.png" width="50%" >
+
+The second edge in the example shows the use of a mathematical expression in the 'from' node. 
+The 'to' node is specified with the new scheme using numbers directly for the different components.
+
+The availability of mathematical expression support for the ```XPosExpr``` and ```YPosExpr``` is useful when dealing with non-default threshold levels.
+
 bla bla TODO bla bla
 
-supports mathematical expressions
+
+
+
 
 #### Re-factored Edge Shape Implementation
 
